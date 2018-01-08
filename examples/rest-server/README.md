@@ -181,3 +181,35 @@ The code in this directory is licensed under the MIT license, however please not
   ```shell
   $ curl http://localhost:8888/endpoints/eui64-19003c00-76656438/3/0/4 -X POST -H "Content-Type: application/octet-stream" --data-binary "Execute parameters"
   ```
+
+**Observe device resource [async]**
+----
+  Schedules an asynchronous transaction to observe a resource from the device. Observed resource will send
+  notifications whenever it's value changes or maximum observation period passes since last notification.
+  
+  Returns transaction id (`async-response-id`), which will be used in the event channel (see below)
+  to indicate observation events.
+  The path must be a valid LwM2M path to a resource (`/object_id/instance_id/resource_id`).
+
+* **URL**
+
+  /subscriptions/:name/:path
+
+* **Method:**
+
+  `PUT`
+
+* **Success Response:**
+
+  * **Code:** 202 <br />
+    **Content:** `{"async-response-id":"1515412658#16ebc05b-2ad6-d805-3e01-50b8"}`
+ 
+* **Error Response:**
+
+  * **Code:** 404 NOT FOUND - the given endpoint name or path is invalid or does not exist <br />
+
+* **Sample Call:**
+
+  ```shell
+  $ curl http://localhost:8888/subscriptions/eui64-19003c00-76656438/3200/0/5500 -X PUT
+  ```
