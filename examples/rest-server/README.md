@@ -213,3 +213,112 @@ The code in this directory is licensed under the MIT license, however please not
   ```shell
   $ curl http://localhost:8888/subscriptions/eui64-19003c00-76656438/3200/0/5500 -X PUT
   ```
+
+**Poll events**
+----
+  Returns all pending events and clears them from the event channel.
+  Events are grouped into four types - [re-]registration (`registrations`), update (`reg-updates`), deregistrations (`de-registrations`) and
+  asynchronous responses (`async-responses`).
+  
+  Registration, update and deregistration events contain an id (`name`) of the device which performed the corresponding event.
+  Asyncronous response events are created when a response to a previously created asyncronous transaction is received from the device
+  or an error happens, e.g. a transaction timeout. Asynchronous responses have an ID (given during async transaction creation),
+  status code (`code`) and a base64 encoded payload.
+
+* **URL**
+
+  /notification/pull
+
+* **Method:**
+
+  `GET`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** 
+    ```json
+    {
+      "registrations": [
+        {"name": "eui64-1d002a00-76656438"}
+      ],
+      "reg-updates": [
+        {"name": "eui64-1d002a00-76656438"},
+        {"name": "eui64-19003c00-76656438"}
+      ],
+      "de-registrations": [
+        {"name": "eui64-19003c00-76656438"}
+      ],
+      "async-responses": [
+        {"id": "1515491879#bbd48aef-3211-a4b2-92e8-1f92", "status": 200, "payload": "wAI="}
+      ]
+    }
+    ```
+
+* **Sample Call:**
+
+  ```shell
+  curl http://localhost:8888/notification/pull
+  ```
+
+**Register callback**
+----
+  Registers a callback URL and parameters which will be used to send events as they are created on the event channel.
+
+* **URL**
+
+  /notification/callback
+
+* **Method:**
+  
+  `PUT`
+  
+* **Data Params**
+
+  Data must be a JSON object with `url` string of the callback address and `headers` object with optional key/value pairs
+  that should be included in the callback request.
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+ 
+* **Error Response:**
+
+  * **Code:** 400 BAD REQUEST - invalid JSON object format<br />
+
+  OR
+
+  * **Code:** 415 UNSUPPORTED MEDIA TYPE - content type header is not "application/json" <br />
+
+* **Sample Call:**
+
+  ```shell
+  $ curl http://localhost:8888/notification/callback -X PUT -H "Content-Type: application/json" --data '{"url": "http://localhost:9999/my_callback", "headers": {}}'
+  ```
+
+**Check notification callback**
+----
+  Retrieves currently registered callback url and headers.
+
+* **URL**
+
+  /notification/callback
+
+* **Method:**
+  
+  `GET`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{"url":"http://localhost:9999/my_callback","headers":{}}`
+ 
+* **Error Response:**
+
+  * **Code:** 404 NOT FOUND - no callback is registered <br />
+
+* **Sample Call:**
+
+  ```shell
+  $ curl http://localhost:8888/notification/callback
+  ```
