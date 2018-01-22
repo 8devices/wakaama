@@ -1,10 +1,16 @@
-LwM2M server with HTTP REST API example application.
+**Overview**
+----
+  This REST API provides easy to use interface to the LwM2M server and all LwM2M clients (devices) that are connected to it. One of the major issues with LwM2M is that clients may be often be unreachable (e.g. sleepy devices) and it's not possible to perform a direct transaction immediately. For this reason even channel model is used and all REST requests, that result in a (remote) transaction with a LwM2M client, return an asynchronous transaction id. Such calls are marked with **[async]** tag.
+  
+  Once such transaction is completed (or fails), an asynchronous response message is put into the event channel. The event channel should be regulary polled to retrieve the queued events. If polling is undesired, or better time response is needed, the application can register an event callback address - in such case this REST service will send events immediately and directly to the registered address.
+  
+  Along with asynchronous responses, other events are also put into the event channel. These include registration, update and deregistration notifications. Event channel structure details can be found below, in the **Poll events** API call description.
+  
+  The REST API is similar to [MBED Device Connector API documentation](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/api-reference/) and many functions should be compatible, however some differences are to be expected.
 
-The REST API is based on [MBED Device Connector API documentation](https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/api-reference/) and main functionality should be compatible, however differences should be expected.
-Until separate documentation is available, please refer to code for details.
-
+**License**
+----
 The code in this directory is licensed under the MIT license, however please note that the application uses other libraries (including wakaama) that come under different licenses.
-
 
 **List connected devices**
 ----
