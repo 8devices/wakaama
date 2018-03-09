@@ -35,7 +35,7 @@
 #include "connection.h"
 #include "restserver.h"
 
-static int restserver_quit;
+static volatile int restserver_quit;
 static void sigint_handler(int signo)
 {
     restserver_quit = 1;
