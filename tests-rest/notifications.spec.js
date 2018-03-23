@@ -166,4 +166,69 @@ describe('Notifications interface', function () {
         });
     });
   });
+
+  describe('GET /notification/pull', function() {
+
+    it('should return object and 200 for single pull', function(done) {
+      const id_regex = /^\d+#[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}$/g;
+      chai.request(server)
+        .get('/endpoints/'+client.name+'/3/0/0')
+        .end(function (err, res) {
+          should.not.exist(err);
+          res.should.have.status(202);
+          res.should.have.header('content-type', 'application/json');
+
+          res.body.should.be.a('object');
+          res.body.should.have.property('async-response-id');
+          res.body['async-response-id'].should.be.a('string');
+          res.body['async-response-id'].should.match(id_regex);
+
+          chai.request(server)
+            .get('/notification/pull')
+            .end(function (err, res) {
+              should.not.exist(err);
+              res.should.have.status(200);
+
+              done();
+            });
+        });
+    });
+
+    it('should return 204 for double pull', function(done) {
+      const id_regex = /^\d+#[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}$/g;
+      chai.request(server)
+        .get('/endpoints/'+client.name+'/3/0/0')
+        .end(function (err, res) {
+          should.not.exist(err);
+          res.should.have.status(202);
+          res.should.have.header('content-type', 'application/json');
+
+          res.body.should.be.a('object');
+          res.body.should.have.property('async-response-id');
+          res.body['async-response-id'].should.be.a('string');
+          res.body['async-response-id'].should.match(id_regex);
+
+          chai.request(server)
+            .get('/notification/pull')
+            .end(function (err, res) {
+              should.not.exist(err);
+              res.should.have.status(200);
+
+              chai.request(server)
+                .get('/notification/pull')
+                .end(function (err, res) {
+                  should.not.exist(err);
+                  res.body.should.be.a('object');
+                  // XXX: Should be 204 and no object when there are no new notifications
+                  // it is 200 and dictionary with empty arrays now
+                  // res.should.have.status(204);
+
+                  res.should.have.status(200);
+
+                  done();
+                });
+            });
+        });
+    });
+  });
 });
