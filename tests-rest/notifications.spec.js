@@ -2,7 +2,6 @@
 const chai = require('chai');
 const chai_http = require('chai-http');
 const should = chai.should();
-const events = require('events');
 const server = require('./server-if');
 const ClientInterface = require('./client-if');
 
@@ -12,25 +11,7 @@ describe('Notifications interface', function () {
   const client = new ClientInterface();
 
   before(function (done) {
-    var self = this;
-
     server.start();
-
-    self.events = new events.EventEmitter();
-    // TODO: swap interval with long-poll once server supports it
-    self.interval = setInterval(function () {
-      chai.request(server)
-        .get('/notification/pull')
-        .end(function (err, res) {
-          const responses = res.body['async-responses'];
-          if (!responses)
-            return;
-
-          for (var i=0; i<responses.length; i++) {
-            self.events.emit('async-response', responses[i]);
-          }
-        });
-    }, 1000);
 
     client.connect(server.address(), (err, res) => {
       done();
@@ -38,7 +19,6 @@ describe('Notifications interface', function () {
   });
 
   after(function () {
-    clearInterval(this.interval);
     client.disconnect();
   });
 
