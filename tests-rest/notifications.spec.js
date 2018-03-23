@@ -128,7 +128,7 @@ describe('Notifications interface', function () {
       chai.request(server)
         .put('/notification/callback')
         .set('Content-Type', 'application/json')
-        .send('{"url": "http://localhost:9999/my_callback", "headers": {42: 42}}')
+        .send('{"url": "http://localhost:9999/my_callback", "headers": {"Wrong-Header": 42}}')
         .end(function (err, res) {
           err.should.have.status(400);
 
