@@ -3,8 +3,6 @@ const chai = require('chai');
 const chai_http = require('chai-http');
 const should = chai.should();
 const events = require('events');
-const ClientInstance = require('restserver-api').Emulate.Client;
-const RESOURCE_TYPE = require('restserver-api').Emulate.RESOURCE_TYPE;
 const server = require('./server-if');
 const ClientInterface = require('./client-if');
 
@@ -169,4 +167,3 @@ describe('Notifications interface', function () {
     });
   });
 });
-
