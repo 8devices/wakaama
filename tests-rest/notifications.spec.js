@@ -218,7 +218,8 @@ describe('Notifications interface', function () {
       .end(function (err, res) {
         should.not.exist(err);
 
-        client.sendUpdate(() => {
+        client.sendUpdate()
+        .then(() => {
           chai.request(server)
           .get('/notification/pull')
           .end(function (err, res) {
@@ -236,6 +237,9 @@ describe('Notifications interface', function () {
 
             done();
           });
+        })
+        .catch((err) => {
+          should.not.exist(err);
         });
       });
     });

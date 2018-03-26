@@ -39,14 +39,14 @@ class ClientInterface extends Client {
     this.stop();
   }
 
-  sendUpdate(callback) {
-    if (this.state === 'registered') {
-      this.updateHandler();
-
-      if(typeof(callback) === 'function') {
-        callback();
+  sendUpdate() {
+    return new Promise((fulfill, reject) => {
+      if (this.state !== 'registered') {
+        reject('Sensor not registered!');
       }
-    }
+      this.updateHandler();
+      fulfill();
+    });
   }
 
   set temperature(t) {
