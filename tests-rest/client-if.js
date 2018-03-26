@@ -1,4 +1,3 @@
-
 const Emulate = require('restserver-api').Emulate;
 const Client = Emulate.Client;
 const RESOURCE_TYPE = Emulate.RESOURCE_TYPE;
@@ -40,25 +39,12 @@ class ClientInterface extends Client {
     this.stop();
   }
 
-  sendUpdate(path, callback) {
-    let updatePath;
-    let updateCallback;
-
-    if (typeof(path) === 'string') {
-      updatePath = path;
-    } else if (typeof(path) === 'function') {
-      updateCallback = path;
-    }
-
-    if (typeof(callback) === 'function') {
-      updateCallback = callback;
-    }
-
+  sendUpdate(callback) {
     if (this.state === 'registered') {
-      this.updateHandler(updatePath);
+      this.updateHandler();
 
-      if(typeof(updateCallback) === 'function') {
-        updateCallback();
+      if(typeof(callback) === 'function') {
+        callback();
       }
     }
   }
