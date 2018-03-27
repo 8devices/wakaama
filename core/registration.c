@@ -1040,7 +1040,7 @@ static int prv_getLocationString(uint16_t id,
     if (result < 0) return 0;
     index = result;
 
-    result = utils_intToText(id, (uint8_t*)location + index, MAX_LOCATION_LENGTH - index);
+    result = utils_intToText(id, (uint8_t*)location + index, MAX_LOCATION_LENGTH);
     if (result == 0) return 0;
 
     return index + result;
