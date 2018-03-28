@@ -1040,10 +1040,14 @@ static int prv_getLocationString(uint16_t id,
     if (result < 0) return 0;
     index = result;
 
-    result = utils_intToText(id, (uint8_t*)location + index, MAX_LOCATION_LENGTH);
+    result = utils_intToText(id, (uint8_t*)location + index, MAX_LOCATION_LENGTH - index);
     if (result == 0) return 0;
 
-    return index + result;
+    index += result;
+    if (index >= MAX_LOCATION_LENGTH) return 0;
+    location[index] = '\0';
+
+    return index;
 }
 
 uint8_t registration_handleRequest(lwm2m_context_t * contextP,
