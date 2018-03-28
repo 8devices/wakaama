@@ -142,6 +142,17 @@ describe('Resources interface', function () {
         });
     });
 
+    it('should return 400 for invalid resource-path', function (done) {
+      chai.request(server)
+        .put('/endpoints/'+client.name+'/some/invalid/path')
+        .set('Content-Type', 'application/vnd.oma.lwm2m+tlv')
+        .send(Buffer.from([]))
+        .end(function (err, res) {
+          res.should.have.status(400);
+          done();
+        });
+    });
+
     it('should return 404 for invalid resource-path', function (done) {
       chai.request(server)
         .put('/endpoints/'+client.name+'/some/invalid/path')
