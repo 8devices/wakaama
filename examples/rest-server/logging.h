@@ -34,8 +34,6 @@ typedef enum {
     LOG_LEVEL_TRACE = 5,
 } logging_level_t;
 
-static logging_level_t current_level;
-
 int logging_init(logging_level_t logging_level);
 
 int log_message(logging_level_t logging_level, char* format, ...);

@@ -27,18 +27,16 @@
 
 #include "logging.h"
 
+static logging_level_t current_level;
+
 int logging_init(logging_level_t logging_level)
 {
-    if (logging_level > LOG_LEVEL_TRACE) {
-        log_message(LOG_LEVEL_WARN, "Failed to initialise log level \"%c\".\n", logging_level + '0');
-        log_message(LOG_LEVEL_WARN, "Log level must be a number:\n");
-        log_message(LOG_LEVEL_WARN, "0 - FATAL\n1 - ERROR\n2 - WARN\n3 - INFO\n4 - DEBUG\n5 - TRACE\n");
-
-        return -1;
-    };
-
     current_level = logging_level;
-    log_message(LOG_LEVEL_TRACE, "Logging level set to %hhu\n", logging_level);
+    log_message(LOG_LEVEL_TRACE, "Logging level set to %d\n", logging_level);
+
+    if (logging_level > LOG_LEVEL_TRACE) {
+        log_message(LOG_LEVEL_WARN, "Unexpected high log level \"%d\".\n", logging_level);
+    };
 
     return 0;
 }
