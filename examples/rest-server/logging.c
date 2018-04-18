@@ -27,7 +27,7 @@
 
 #include "logging.h"
 
-int logging_init(unsigned char logging_level)
+int logging_init(logging_level_t logging_level)
 {
     if (logging_level > LOG_LEVEL_TRACE) {
         log_message(LOG_LEVEL_WARN, "Failed to initialise log level \"%c\".\n", logging_level + '0');
@@ -43,7 +43,7 @@ int logging_init(unsigned char logging_level)
     return 0;
 }
 
-int log_message(unsigned char logging_level, char* format, ...)
+int log_message(logging_level_t logging_level, char* format, ...)
 {
     va_list arg_ptr;
     va_start(arg_ptr, format);

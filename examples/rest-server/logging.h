@@ -25,18 +25,20 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
-static const unsigned char LOG_LEVEL_FATAL = 0;
-static const unsigned char LOG_LEVEL_ERROR = 1;
-static const unsigned char LOG_LEVEL_WARN = 2;
-static const unsigned char LOG_LEVEL_INFO = 3;
-static const unsigned char LOG_LEVEL_DEBUG = 4;
-static const unsigned char LOG_LEVEL_TRACE = 5;
+typedef enum {
+    LOG_LEVEL_FATAL = 0,
+    LOG_LEVEL_ERROR = 1,
+    LOG_LEVEL_WARN = 2,
+    LOG_LEVEL_INFO = 3,
+    LOG_LEVEL_DEBUG = 4,
+    LOG_LEVEL_TRACE = 5,
+} logging_level_t;
 
-unsigned char current_level;
+static logging_level_t current_level;
 
-int logging_init(unsigned char logging_level);
+int logging_init(logging_level_t logging_level);
 
-int log_message(unsigned char logging_level, char* format, ...);
+int log_message(logging_level_t logging_level, char* format, ...);
 
 #endif // LOGGING_H
 
