@@ -38,7 +38,7 @@ int logging_init(unsigned char logging_level)
     };
 
     current_level = logging_level;
-    log_message(LOG_LEVEL_INFO, "Logging level set to %hhu\n", logging_level);
+    log_message(LOG_LEVEL_TRACE, "Logging level set to %hhu\n", logging_level);
 
     return 0;
 }
