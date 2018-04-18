@@ -244,6 +244,7 @@ int socket_receive(lwm2m_context_t *lwm2m, int sock)
 
 int main(int argc, char *argv[])
 {
+    int arg;
     int sock;
     fd_set readfds;
     struct timeval tv;
@@ -252,7 +253,7 @@ int main(int argc, char *argv[])
     unsigned char logging_level;
 
     logging_init(LOG_LEVEL_WARN);
-    for (int arg = 1; arg < argc; arg++)
+    for (arg = 1; arg < argc; arg++)
     {
         if (strcmp(argv[arg], "-l") == 0 || strcmp(argv[arg], "--log") == 0)
         {
