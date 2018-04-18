@@ -34,6 +34,7 @@
 
 #include "connection.h"
 #include "restserver.h"
+#include "logging.h"
 
 static volatile int restserver_quit;
 static void sigint_handler(int signo)
@@ -248,10 +249,35 @@ int main(int argc, char *argv[])
     struct timeval tv;
     int res;
     rest_context_t rest;
+    unsigned char logging_level;
 
+    logging_init(LOG_LEVEL_WARN);
+    for (int arg = 1; arg < argc; arg++)
+    {
+        if (strcmp(argv[arg], "-l") == 0 || strcmp(argv[arg], "--log") == 0)
+        {
+            arg++;
+
+            if (strlen(argv[arg]) != 1)
+            {
+                log_message(LOG_LEVEL_WARN, "Failed to initialise log level \"%s\".\n", argv[arg]);
+                log_message(LOG_LEVEL_WARN, "Log level must be a number:\n");
+                log_message(LOG_LEVEL_WARN, "0 - FATAL\n1 - ERROR\n2 - WARN\n3 - INFO\n4 - DEBUG\n5 - TRACE\n");
+
+                continue;
+            }
+
+            logging_level = (unsigned char)argv[arg][0] - '0';
+
+            logging_init(logging_level);
+        }
+        else
+        {
+            log_message(LOG_LEVEL_WARN, "Unrecognized argument: \"%s\"\n", argv[arg]);
+        }
+    }
 
     init_signals();
-
 
     rest_init(&rest);
 
