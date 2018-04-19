@@ -173,7 +173,7 @@ static int rest_resources_rwe_cb_unsafe(rest_context_t *rest,
 
     if (req->http_url == NULL || strlen(req->http_url) >= sizeof(path) || len >= sizeof(path))
     {
-        log_message(LOG_LEVEL_ERROR, "%s(): invalid http request (%s)!\n", __func__, req->http_url);
+        log_message(LOG_LEVEL_WARN, "%s(): invalid http request (%s)!\n", __func__, req->http_url);
         return U_CALLBACK_ERROR;
     }
 
