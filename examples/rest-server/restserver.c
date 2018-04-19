@@ -27,6 +27,7 @@ HETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #include <signal.h>
 #include <stdint.h>
 #include <string.h>
+#include <argp.h>
 
 #include <liblwm2m.h>
 #include <ulfius.h>
@@ -34,6 +35,39 @@ HETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #include "connection.h"
 #include "restserver.h"
 #include "logging.h"
+
+const char *argp_program_version = "restserver 1.0";
+
+static char doc[] = "Restserver - interface to LwM2M server and all clients connected to it";
+
+static struct argp_option options[] =
+{
+    {"log",   'l', "LOGGING_LEVEL", 0, "Specify logging level (0-5)" },
+    { 0 }
+};
+
+struct arguments
+{
+    logging_level_t logging_level;
+};
+
+static error_t parse_opt(int key, char *arg, struct argp_state *state)
+{
+    struct arguments *arguments = state->input;
+
+    switch (key)
+    {
+    case 'l':
+        arguments->logging_level = atoi(arg);
+        break;
+
+    default:
+        return ARGP_ERR_UNKNOWN;
+    }
+    return 0;
+}
+
+static struct argp argp = { options, parse_opt, 0, doc };
 
 static volatile int restserver_quit;
 static void sigint_handler(int signo)
@@ -243,30 +277,17 @@ int socket_receive(lwm2m_context_t *lwm2m, int sock)
 
 int main(int argc, char *argv[])
 {
-    int arg;
+    struct arguments arguments;
+
+    arguments.logging_level = LOG_LEVEL_WARN;
+    argp_parse(&argp, argc, argv, 0, 0, &arguments);
+    logging_init(arguments.logging_level);
+
     int sock;
     fd_set readfds;
     struct timeval tv;
     int res;
     rest_context_t rest;
-    logging_level_t logging_level;
-
-    logging_init(LOG_LEVEL_WARN);
-    for (arg = 1; arg < argc; arg++)
-    {
-        if (strcmp(argv[arg], "-l") == 0 || strcmp(argv[arg], "--log") == 0)
-        {
-            arg++;
-
-            logging_level = atoi(argv[arg]);
-
-            logging_init(logging_level);
-        }
-        else
-        {
-            log_message(LOG_LEVEL_WARN, "Unrecognized argument: \"%s\"\n", argv[arg]);
-        }
-    }
 
     init_signals();
 
