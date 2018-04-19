@@ -41,8 +41,8 @@ static void rest_observe_cb(uint16_t clientID, lwm2m_uri_t *uriP, int count,
     rest_observe_context_t *ctx = (rest_observe_context_t *)context;
     rest_async_response_t *response;
 
-    log_message(LOG_LEVEL_INFO, "[OBSERVE-RESPONSE] id=%s count=%d data=%p\n", ctx->response->id, count,
-                data);
+    log_message(LOG_LEVEL_INFO, "[OBSERVE-RESPONSE] id=%s count=%d data=%p\n",
+                ctx->response->id, count, data);
 
     response = rest_async_response_clone(ctx->response);
     if (response == NULL)
