@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-#include "restserver.h"
-
 #include <string.h>
 
+#include "logging.h"
+#include "restserver.h"
 
 bool valid_callback_url(const char *url)
 {
@@ -124,7 +124,8 @@ int rest_notifications_put_callback_cb(const ulfius_req_t *req, ulfius_resp_t *r
         return U_CALLBACK_COMPLETE;
     }
 
-    fprintf(stdout, "[SET-CALLBACK] url=%s\n", json_string_value(json_object_get(jcallback, "url")));
+    log_message(LOG_LEVEL_INFO, "[SET-CALLBACK] url=%s\n", json_string_value(json_object_get(jcallback,
+                "url")));
 
     rest_lock(rest);
 
