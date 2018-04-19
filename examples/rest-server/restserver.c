@@ -277,17 +277,16 @@ int socket_receive(lwm2m_context_t *lwm2m, int sock)
 
 int main(int argc, char *argv[])
 {
-    struct arguments arguments;
-
-    arguments.logging_level = LOG_LEVEL_WARN;
-    argp_parse(&argp, argc, argv, 0, 0, &arguments);
-    logging_init(arguments.logging_level);
-
     int sock;
     fd_set readfds;
     struct timeval tv;
     int res;
     rest_context_t rest;
+    struct arguments arguments;
+
+    arguments.logging_level = LOG_LEVEL_WARN;
+    argp_parse(&argp, argc, argv, 0, 0, &arguments);
+    logging_init(arguments.logging_level);
 
     init_signals();
 
