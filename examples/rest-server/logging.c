@@ -34,14 +34,15 @@ int logging_init(logging_level_t logging_level)
     current_level = logging_level;
     log_message(LOG_LEVEL_TRACE, "Logging level set to %d\n", logging_level);
 
-    if (logging_level > LOG_LEVEL_TRACE) {
+    if (logging_level > LOG_LEVEL_TRACE)
+    {
         log_message(LOG_LEVEL_WARN, "Unexpected high log level \"%d\".\n", logging_level);
     };
 
     return 0;
 }
 
-int log_message(logging_level_t logging_level, char* format, ...)
+int log_message(logging_level_t logging_level, char *format, ...)
 {
     va_list arg_ptr;
     va_start(arg_ptr, format);

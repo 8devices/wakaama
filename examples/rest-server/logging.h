@@ -25,7 +25,8 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
-typedef enum {
+typedef enum
+{
     LOG_LEVEL_FATAL = 0,
     LOG_LEVEL_ERROR = 1,
     LOG_LEVEL_WARN = 2,
@@ -36,7 +37,7 @@ typedef enum {
 
 int logging_init(logging_level_t logging_level);
 
-int log_message(logging_level_t logging_level, char* format, ...);
+int log_message(logging_level_t logging_level, char *format, ...);
 
 #endif // LOGGING_H
 
