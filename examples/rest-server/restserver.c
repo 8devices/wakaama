@@ -109,7 +109,7 @@ static void init_signals(void)
     //to stop valgrind
     if (0 != sigaction(SIGTERM, &sig, &oldsig))
     {
-        log_message(LOG_LEVEL_FATAL, "Failed to install SIGINT handler: %s\n", strerror(errno));
+        log_message(LOG_LEVEL_FATAL, "Failed to install SIGTERM handler: %s\n", strerror(errno));
     }
 
 
