@@ -248,10 +248,27 @@ int main(int argc, char *argv[])
     struct timeval tv;
     int res;
     rest_context_t rest;
-    static settings_t settings;
     char coap_port[6];
 
-    settings_init(argc, argv, &settings);
+    static settings_t settings =
+    {
+        {
+            8888, /* settings.http.port */
+        },
+        {
+            5555, /* settings.coap.port */
+        },
+        {
+            LOG_LEVEL_WARN, /* settings.logging.level */
+        },
+    };
+
+    if (settings_init(argc, argv, &settings) != 0)
+    {
+        return -1;
+    }
+
+    logging_init(settings.logging.level);
 
     init_signals();
 

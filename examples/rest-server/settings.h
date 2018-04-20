@@ -30,6 +30,7 @@
 #include <jansson.h>
 #include <argp.h>
 
+#include "logging.h"
 
 typedef struct
 {

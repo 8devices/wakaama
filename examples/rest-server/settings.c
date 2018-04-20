@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "logging.h"
 #include "settings.h"
 
 const char *argp_program_version = "restserver 1.0";
@@ -45,19 +45,16 @@ static void set_coap_settings(json_t *section, coap_settings_t *settings)
     const char *section_name = "coap";
     json_t *value;
 
-    log_message(LOG_LEVEL_TRACE, "Reading coap section from configuration file.\n");
     json_object_foreach(section, key, value)
     {
         if (strcmp(key, "port") == 0)
         {
             settings->port = (uint16_t) json_integer_value(value);
-            log_message(LOG_LEVEL_TRACE, "    %s.%s = %d\n",
-                        section_name, key, json_integer_value(value));
         }
         else
         {
-            log_message(LOG_LEVEL_WARN, "Unrecognised configuration file key: %s.%s\n",
-                        section_name, key);
+            fprintf(stdout, "Unrecognised configuration file key: %s.%s\n",
+                    section_name, key);
         }
     }
 }
@@ -68,19 +65,16 @@ static void set_http_settings(json_t *section, http_settings_t *settings)
     const char *section_name = "http";
     json_t *value;
 
-    log_message(LOG_LEVEL_TRACE, "Reading http section from configuration file.\n");
     json_object_foreach(section, key, value)
     {
         if (strcmp(key, "port") == 0)
         {
             settings->port = (uint16_t) json_integer_value(value);
-            log_message(LOG_LEVEL_TRACE, "    %s.%s = %d\n",
-                        section_name, key, json_integer_value(value));
         }
         else
         {
-            log_message(LOG_LEVEL_WARN, "Unrecognised configuration file key: %s.%s\n",
-                        section_name, key);
+            fprintf(stdout, "Unrecognised configuration file key: %s.%s\n",
+                    section_name, key);
         }
     }
 }
@@ -91,19 +85,16 @@ static void set_logging_settings(json_t *section, logging_settings_t *settings)
     const char *section_name = "logging";
     json_t *value;
 
-    log_message(LOG_LEVEL_TRACE, "Reading logging section from configuration file.\n");
     json_object_foreach(section, key, value)
     {
         if (strcmp(key, "level") == 0)
         {
             settings->level = (logging_level_t) json_integer_value(value);
-            log_message(LOG_LEVEL_TRACE, "    %s.%s = %d\n",
-                        section_name, key, json_integer_value(value));
         }
         else
         {
-            log_message(LOG_LEVEL_WARN, "Unrecognised configuration file key: %s.%s\n",
-                        section_name, key);
+            fprintf(stdout, "Unrecognised configuration file key: %s.%s\n",
+                    section_name, key);
         }
     }
 }
@@ -116,14 +107,12 @@ int read_config(char *config_name, settings_t *settings)
 
     json_t *settings_json = json_object();
 
-    log_message(LOG_LEVEL_TRACE, "Opening configuration file \"%s\"...\n", config_name);
-
     settings_json = json_load_file(config_name, 0, &error);
 
     if (settings_json == NULL)
     {
-        log_message(LOG_LEVEL_ERROR, "%s:%d:%d error:%s \n",
-                    config_name, error.line, error.column, error.text);
+        fprintf(stderr, "%s:%d:%d error:%s \n",
+                config_name, error.line, error.column, error.text);
         return 1;
     }
 
@@ -143,7 +132,7 @@ int read_config(char *config_name, settings_t *settings)
         }
         else
         {
-            log_message(LOG_LEVEL_WARN, "Unrecognised configuration file section: %s\n", section);
+            fprintf(stdout, "Unrecognised configuration file section: %s\n", section);
         }
     }
 
@@ -161,7 +150,10 @@ error_t parse_opt(int key, char *arg, struct argp_state *state)
         break;
 
     case 'c':
-        read_config(arg, settings);
+        if (read_config(arg, settings) != 0)
+        {
+            return 1;
+        }
         break;
 
     default:
@@ -189,9 +181,5 @@ int settings_init(int argc, char *argv[], settings_t *settings)
 
     memcpy(settings, &default_settings, sizeof(default_settings));
 
-    logging_init(LOG_LEVEL_WARN);
-    argp_parse(&argp, argc, argv, 0, 0, settings);
-    logging_init(settings->logging.level);
-
-    return 0;
+    return argp_parse(&argp, argc, argv, 0, 0, settings);
 }
