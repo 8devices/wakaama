@@ -166,20 +166,5 @@ static struct argp argp = { options, parse_opt, 0, doc };
 
 int settings_init(int argc, char *argv[], settings_t *settings)
 {
-    static const settings_t default_settings =
-    {
-        {
-            8888, /* default_settings.http.port */
-        },
-        {
-            5555, /* default_settings.coap.port */
-        },
-        {
-            LOG_LEVEL_WARN, /* default_settings.logging.level */
-        },
-    };
-
-    memcpy(settings, &default_settings, sizeof(default_settings));
-
     return argp_parse(&argp, argc, argv, 0, 0, settings);
 }
