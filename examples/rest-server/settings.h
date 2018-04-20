@@ -53,10 +53,6 @@ typedef struct
     logging_settings_t logging;
 } settings_t;
 
-void set_coap_settings(json_t *section, coap_settings_t *settings);
-void set_http_settings(json_t *section, http_settings_t *settings);
-void set_logging_settings(json_t *section, logging_settings_t *settings);
-
 int read_config(char *config_name, settings_t *settings);
 
 error_t parse_opt(int key, char *arg, struct argp_state *state);

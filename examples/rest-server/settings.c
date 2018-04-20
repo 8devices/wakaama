@@ -39,7 +39,7 @@ static struct argp_option options[] =
     { 0 }
 };
 
-void set_coap_settings(json_t *section, coap_settings_t *settings)
+static void set_coap_settings(json_t *section, coap_settings_t *settings)
 {
     const char *key;
     const char *section_name = "coap";
@@ -62,7 +62,7 @@ void set_coap_settings(json_t *section, coap_settings_t *settings)
     }
 }
 
-void set_http_settings(json_t *section, http_settings_t *settings)
+static void set_http_settings(json_t *section, http_settings_t *settings)
 {
     const char *key;
     const char *section_name = "http";
@@ -85,7 +85,7 @@ void set_http_settings(json_t *section, http_settings_t *settings)
     }
 }
 
-void set_logging_settings(json_t *section, logging_settings_t *settings)
+static void set_logging_settings(json_t *section, logging_settings_t *settings)
 {
     const char *key;
     const char *section_name = "logging";
