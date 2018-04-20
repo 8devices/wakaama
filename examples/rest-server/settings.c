@@ -174,22 +174,20 @@ static struct argp argp = { options, parse_opt, 0, doc };
 
 int settings_init(int argc, char *argv[], settings_t *settings)
 {
-    coap_settings_t coap_settings = (coap_settings_t)
+    static const settings_t default_settings =
     {
-        .port = 5555,
-    };
-    http_settings_t http_settings = (http_settings_t)
-    {
-        .port = 8888,
-    };
-    logging_settings_t logging_settings = (logging_settings_t)
-    {
-        .level = LOG_LEVEL_WARN,
+        {
+            8888, /* default_settings.http.port */
+        },
+        {
+            5555, /* default_settings.coap.port */
+        },
+        {
+            LOG_LEVEL_WARN, /* default_settings.logging.level */
+        },
     };
 
-    settings->coap = coap_settings;
-    settings->http = http_settings;
-    settings->logging = logging_settings;
+    memcpy(settings, &default_settings, sizeof(default_settings));
 
     logging_init(LOG_LEVEL_WARN);
     argp_parse(&argp, argc, argv, 0, 0, settings);
