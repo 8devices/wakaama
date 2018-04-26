@@ -68,11 +68,21 @@ int rest_step(rest_context_t *rest, struct timeval *tv)
     ulfius_req_t request;
     ulfius_resp_t response;
     json_t *jbody;
+    json_t *jheaders;
+    json_t *value;
+    const char *header;
+    struct _u_map headers;
     int res;
 
     if (rest->asyncResponseList != NULL && rest->callback != NULL)
     {
         const char *url = json_string_value(json_object_get(rest->callback, "url"));
+        jheaders = json_object_get(rest->callback, "headers");
+        u_map_init(&headers);
+        json_object_foreach(jheaders, header, value)
+        {
+            u_map_put(&headers, header, json_string_value(value));
+        }
 
         log_message(LOG_LEVEL_INFO, "[CALLBACK] Sending to %s\n", url);
 
@@ -82,7 +92,7 @@ int rest_step(rest_context_t *rest, struct timeval *tv)
         request.http_verb = strdup("PUT");
         request.http_url = strdup(url);
         request.timeout = 20;
-        // TODO: add headers
+        u_map_copy_into(request.map_header, &headers);
 
         ulfius_set_json_body_request(&request, jbody);
         json_decref(jbody);
@@ -94,6 +104,7 @@ int rest_step(rest_context_t *rest, struct timeval *tv)
             rest_notifications_clear(rest);
         }
 
+        u_map_clean(&headers);
         ulfius_clean_request(&request);
         ulfius_clean_response(&response);
     }
