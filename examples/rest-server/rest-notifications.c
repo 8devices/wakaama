@@ -38,6 +38,14 @@ bool validate_callback(json_t *jcallback)
     json_t *url, *headers;
     const char *key;
     json_t *value;
+    int res;
+    const char *callback_url;
+    ulfius_req_t test_request;
+    ulfius_resp_t test_response;
+    json_t *jbody = json_pack("{s:[], s:[], s:[], s:[]}",
+                              "registrations", "reg-updates",
+                              "async-responses", "de-registrations");
+
 
     if (jcallback == NULL)
     {
@@ -73,6 +81,27 @@ bool validate_callback(json_t *jcallback)
             return false;
         }
     }
+
+    callback_url = json_string_value(url);
+
+    ulfius_init_request(&test_request);
+    test_request.http_verb = strdup("PUT");
+    test_request.http_url = strdup(callback_url);
+    test_request.timeout = 20;
+    ulfius_set_json_body_request(&test_request, jbody);
+    json_decref(jbody);
+
+    ulfius_init_response(&test_response);
+    res = ulfius_send_http_request(&test_request, &test_response);
+
+    if (res != U_OK)
+    {
+        log_message(LOG_LEVEL_WARN, "Callback \"%s\" is not reachable.\n", callback_url);
+        return false;
+    }
+
+    ulfius_clean_response(&test_response);
+    ulfius_clean_request(&test_request);
 
     return true;
 }
