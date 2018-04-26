@@ -74,7 +74,11 @@ int rest_step(rest_context_t *rest, struct timeval *tv)
     struct _u_map headers;
     int res;
 
-    if (rest->asyncResponseList != NULL && rest->callback != NULL)
+    if ((rest->registrationList->head != NULL
+         || rest->updateList->head != NULL
+         || rest->deregistrationList->head != NULL
+         || rest->asyncResponseList->head != NULL)
+        && rest->callback != NULL)
     {
         const char *url = json_string_value(json_object_get(rest->callback, "url"));
         jheaders = json_object_get(rest->callback, "headers");
