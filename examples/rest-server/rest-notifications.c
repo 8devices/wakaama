@@ -199,7 +199,7 @@ int rest_notifications_delete_callback_cb(const ulfius_req_t *req, ulfius_resp_t
 
         json_decref(rest->callback);
         rest->callback = NULL;
-    
+
         ulfius_set_empty_body_response(resp, 204);
     }
     else
