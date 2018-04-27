@@ -16,6 +16,12 @@ add_definitions(${SHARED_DEFINITIONS} ${WAKAAMA_DEFINITIONS})
 
 include_directories (${WAKAAMA_SOURCES_DIR} ${SHARED_INCLUDE_DIRS})
 
+execute_process(COMMAND git describe --abbrev=0 --tags
+                OUTPUT_VARIABLE RESTSERVER_VERSION)
+string(REPLACE "\n" "" RESTSERVER_VERSION ${RESTSERVER_VERSION})
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/version.h)
+
 SET(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/restserver.c
     ${CMAKE_CURRENT_LIST_DIR}/rest-core.c
