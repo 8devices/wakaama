@@ -194,47 +194,22 @@ describe('Notifications interface', function () {
 
     it('should return 204 for existing callback deletion', function(done) {
       chai.request(server)
-        .put('/notification/callback')
-        .set('Content-Type', 'application/json')
-        .send('{"url": "http://localhost:9999/test_callback", "headers": {}}')
+        .delete('/notification/callback')
         .end(function (err, res) {
           should.not.exist(err);
           res.should.have.status(204);
 
-          chai.request(server)
-            .delete('/notification/callback')
-            .end(function (err, res) {
-              should.not.exist(err);
-              res.should.have.status(204);
-
-              done();
-            });
+          done();
         });
     });
 
-    it('should return 404 for existing callback deletion', function(done) {
+    it('should return 404 for not existing callback deletion', function(done) {
       chai.request(server)
-        .put('/notification/callback')
-        .set('Content-Type', 'application/json')
-        .send('{"url": "http://localhost:9999/test_callback", "headers": {}}')
+        .delete('/notification/callback')
         .end(function (err, res) {
-          should.not.exist(err);
-          res.should.have.status(204);
+          err.should.have.status(404);
 
-          chai.request(server)
-            .delete('/notification/callback')
-            .end(function (err, res) {
-              should.not.exist(err);
-              res.should.have.status(204);
-
-              chai.request(server)
-                .delete('/notification/callback')
-                .end(function (err, res) {
-                  err.should.have.status(404);
-
-                  done();
-                });
-            });
+          done();
         });
     });
   });
