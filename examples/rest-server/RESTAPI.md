@@ -358,3 +358,27 @@ The code in this directory is licensed under the MIT license, however please not
   ```shell
   $ curl http://localhost:8888/notification/callback
   ```
+
+**Check project version**
+----
+  Retrieves current project version.
+
+* **URL**
+
+  /version
+
+* **Method:**
+  
+  `GET`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `x.y.z`
+      Where `x` represents major release number, `y` - minor release number, `z` - bug fixes
+ 
+* **Sample Call:**
+
+  ```shell
+  $ curl http://localhost:8888/version
+  ```
