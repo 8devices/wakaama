@@ -374,7 +374,7 @@ The code in this directory is licensed under the MIT license, however please not
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** `x.y.z`
+    **Content:** `x.y.z` <br />
       Where `x` represents major release number, `y` - minor release number, `z` - bug fixes
  
 * **Sample Call:**
