@@ -286,7 +286,6 @@ int main(int argc, char *argv[])
     /* Socket section */
     snprintf(coap_port, sizeof(coap_port), "%d", settings.coap.port);
     log_message(LOG_LEVEL_INFO, "Creating coap socket on port %s\n", coap_port);
-
     sock = create_socket(coap_port, AF_INET6);
     if (sock < 0)
     {
