@@ -80,7 +80,9 @@ bool validate_callback(json_t *jcallback)
     {
         if (!json_is_string(value))
         {
-            validation_state = false;
+            u_map_clean(&headers);
+
+            return false;
         }
 
         u_map_put(&headers, header, json_string_value(value));
