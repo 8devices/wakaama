@@ -185,6 +185,35 @@ int rest_notifications_put_callback_cb(const ulfius_req_t *req, ulfius_resp_t *r
     return U_CALLBACK_COMPLETE;
 }
 
+int rest_notifications_delete_callback_cb(const ulfius_req_t *req, ulfius_resp_t *resp,
+                                          void *context)
+{
+    rest_context_t *rest = (rest_context_t *)context;
+
+    rest_lock(rest);
+
+    if (rest->callback != NULL)
+    {
+        log_message(LOG_LEVEL_INFO, "[DELETE-CALLBACK] url=%s\n",
+                    json_string_value(json_object_get(rest->callback, "url")));
+
+        json_decref(rest->callback);
+        rest->callback = NULL;
+    
+        ulfius_set_empty_body_response(resp, 204);
+    }
+    else
+    {
+        log_message(LOG_LEVEL_WARN, "[DELETE-CALLBACK] No callbacks to delete\n");
+
+        ulfius_set_empty_body_response(resp, 404);
+    }
+
+    rest_unlock(rest);
+
+    return U_CALLBACK_COMPLETE;
+}
+
 int rest_notifications_pull_cb(const ulfius_req_t *req, ulfius_resp_t *resp, void *context)
 {
     rest_context_t *rest = (rest_context_t *)context;
