@@ -43,6 +43,7 @@ bool validate_callback(json_t *jcallback)
     ulfius_req_t test_request;
     ulfius_resp_t test_response;
     struct _u_map headers;
+    bool validation_state = true;
     json_t *jbody = json_pack("{s:[], s:[], s:[], s:[]}",
                               "registrations", "reg-updates",
                               "async-responses", "de-registrations");
@@ -79,9 +80,7 @@ bool validate_callback(json_t *jcallback)
     {
         if (!json_is_string(value))
         {
-            u_map_clean(&headers);
-
-            return false;
+            validation_state = false;
         }
 
         u_map_put(&headers, header, json_string_value(value));
@@ -104,17 +103,14 @@ bool validate_callback(json_t *jcallback)
     {
         log_message(LOG_LEVEL_WARN, "Callback \"%s\" is not reachable.\n", callback_url);
 
-        u_map_clean(&headers);
-        ulfius_clean_response(&test_response);
-        ulfius_clean_request(&test_request);
-        return false;
+        validation_state = false;
     }
 
     u_map_clean(&headers);
     ulfius_clean_response(&test_response);
     ulfius_clean_request(&test_request);
 
-    return true;
+    return validation_state;
 }
 
 int rest_notifications_get_callback_cb(const ulfius_req_t *req, ulfius_resp_t *resp,
