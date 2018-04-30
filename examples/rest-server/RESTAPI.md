@@ -359,7 +359,7 @@ The code in this directory is licensed under the MIT license, however please not
   $ curl http://localhost:8888/notification/callback
   ```
 
-**Check project version**
+**Check [REST](./) API version**
 ----
   Retrieves current project version.
 
@@ -374,8 +374,13 @@ The code in this directory is licensed under the MIT license, however please not
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** `x.y.z` <br />
-      Where `x` represents major release number, `y` - minor release number, `z` - bug fixes
+    **Content:** `MAJOR.MINOR.PATCH` <br />
+    
+1. MAJOR version when you make incompatible API changes,
+2. MINOR version when you add functionality in a backwards-compatible manner, and
+3. PATCH version when you make backwards-compatible bug fixes.
+
+    [More information about semantic versioning](https://semver.org/)
  
 * **Sample Call:**
 
