@@ -1,10 +1,11 @@
 const chai = require('chai');
 const chai_http = require('chai-http');
 const server = require('./server-if');
-const { exec } = require('child_process');
 
 const should = chai.should();
 chai.use(chai_http);
+
+const version_regex = /1\.([0-9\.]+)\.([0-9\.]+)/
 
 describe('Version', function () {
   before(function (done) {
@@ -25,10 +26,7 @@ describe('Version', function () {
         .end(function (err, res) {
           should.not.exist(err);
 
-          exec('git describe --abbrev=0 --tags', (err, stdout, stderr) => {
-            const version = stdout.replace('\n','');
-            res.text.should.deep.equal(version);
-          });
+          res.text.should.match(version_regex);
 
           res.should.have.status(200);
 
