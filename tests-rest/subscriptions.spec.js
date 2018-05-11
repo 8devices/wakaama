@@ -141,27 +141,32 @@ describe('Subscriptions interface', function () {
           res.should.have.status(202);
 
           const id = res.body['async-response-id'];
+          var count = 0;
+          var ts = 0;
 
-          self.events.once('async-responses', function (resp) {
+          function twoResponsesTest(resp) {
             if (resp.id !== id) {
               return;
             }
 
+            var dt = new Date().getTime() - ts;
+
             resp.should.have.status(200);
+            dt.should.be.at.least(900);
 
-            self.events.once('async-responses', function (resp) {
-              if (resp.id !== id) {
-                return;
-              }
-              resp.should.have.status(200);
+            ts = new Date().getTime();
+            count++;
 
+            if (count == 2) { // wait for two responses
+              self.events.removeListener('async-responses', twoResponsesTest);
               done();
-            });
+            }
+          }
 
-            client.temperature = 22.1;
-          });
+          self.events.on('async-responses', twoResponsesTest);
 
-          client.temperature = 21.1;
+          setTimeout(() => { client.temperature = -5.0; }, 123);
+          setTimeout(() => { client.temperature = 21.0; }, 1234);
         });
     });
 
