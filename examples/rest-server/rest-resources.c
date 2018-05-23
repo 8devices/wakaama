@@ -152,7 +152,7 @@ static int rest_resources_rwe_cb_unsafe(rest_context_t *rest,
     else if (action == RES_ACTION_EXEC)
     {
         if ((u_map_get_case(req->map_header, "Content-Type") == NULL)
-        || (strcmp(u_map_get_case(req->map_header, "Content-Type"), "text/plain") == 0))
+            || (strcmp(u_map_get_case(req->map_header, "Content-Type"), "text/plain") == 0))
         {
             format = LWM2M_CONTENT_TEXT;
         }
