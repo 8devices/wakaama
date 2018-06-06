@@ -189,7 +189,7 @@ ssdp_status_t ssdp_sock_open(ssdp_t *ssdp)
      * Enable SO_REUSEADDR to allow multiple instances of this
      * application to receive copies of the multicast datagrams.
      */
-    status = setsockopt(ssdp->s_sock, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof(int));
+    status = setsockopt(ssdp->s_sock, SOL_SOCKET, SO_REUSEADDR, &(int) { 1 }, sizeof(int));
     if (status != 0)
     {
         log_message(LOG_LEVEL_ERROR, "[SSDP] Failed to set sock options (%d)!\n", status);
@@ -236,7 +236,7 @@ ssdp_status_t ssdp_sock_open(ssdp_t *ssdp)
 
         /* Specify the multicast group */
         memcpy(&request.ipv6mr_multiaddr,
-               &((struct sockaddr_in6*)(addr->ai_addr))->sin6_addr,
+               &((struct sockaddr_in6 *)(addr->ai_addr))->sin6_addr,
                sizeof(request.ipv6mr_multiaddr));
 
         /* Accept multicast from any interface */
@@ -334,7 +334,7 @@ void *ssdp_run(void *arg)
 
             log_message(LOG_LEVEL_DEBUG, "[SSDP] Sending response len=%d\n", len);
             len = sendto(ssdp->s_sock, buf, len, 0,
-                        (struct sockaddr *)&clientaddr, sizeof(clientaddr));
+                         (struct sockaddr *)&clientaddr, sizeof(clientaddr));
             if (len < 0)
             {
                 log_message(LOG_LEVEL_ERROR, "[SSDP] Failed to send response (%d)!\n", len);
