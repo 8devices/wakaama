@@ -54,7 +54,7 @@ run_restserver () {
     restserver_command="build/restserver ${initial_restserver_arguments}"
 
     if ! [ -z "$1" ]; then
-        mkdir "../$1"
+        mkdir -p $1
         coverage_prefix="GCOV_PREFIX_STRIP=5 GCOV_PREFIX=$1"
         restserver_command="${coverage_prefix} ${restserver_command}"
     fi
@@ -73,7 +73,8 @@ stop_restserver () {
     kill -2 $1 && (wait $1 || true)
 }
 
-cd "$(dirname "$0")/.."
+pwd
+#cd "$(dirname "$0")/.."
 script/format_style.sh --dry-run
 
 if [ ! -x build/restserver ]
@@ -90,13 +91,20 @@ echo "==> Starting restserver(-s)..."
 REGULAR_RESTSERVER_PID=$(run_restserver "regular")
 SECURE_RESTSERVER_PID=$(run_restserver "secure" "-c ./tests-rest/secure.cfg")
 
+echo "%%%%%%%%%%%%%%%%%%%%%%%"
+pwd
+ls -la 
+echo "%%%%%%%%%%%%%%%%%%%%%%%"
+
 echo "==> Running coverage tests..."
-if cd tests-rest && npm install && npm test
+cd tests-rest
+if npm install && npm test
 then
     coverage_tests_status=0
 else
     coverage_tests_status=1
 fi
+cd ..
 
 echo "==> Stopping restserver(-s)..."
 stop_restserver $REGULAR_RESTSERVER_PID
@@ -121,5 +129,10 @@ stop_restserver $SECURE_RESTSERVER_PID
 #    fi
 #    sleep ${sleep_interval}
 #done
+
+echo "%%%%%%%%%%%%%%%%%%%%%%%"
+pwd
+ls -la
+echo "%%%%%%%%%%%%%%%%%%%%%%%"
 
 exit $coverage_tests_status
