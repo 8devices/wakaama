@@ -107,6 +107,8 @@ for time_slept in $(seq 0.0 ${sleep_interval} ${sleep_time})
 do
     if [ -d "../regular" ]; then
         printf "regular exists "
+    else
+        mkdir ../regular
     fi
     if [ -d "../secure" ]; then
         printf "secure exists "
