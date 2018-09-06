@@ -54,7 +54,6 @@ run_restserver () {
     restserver_command="build/restserver ${initial_restserver_arguments}"
 
     if ! [ -z "$1" ]; then
-        mkdir -p $1
         coverage_prefix="GCOV_PREFIX_STRIP=5 GCOV_PREFIX=$1"
         restserver_command="${coverage_prefix} ${restserver_command}"
     fi
@@ -73,15 +72,14 @@ stop_restserver () {
     kill -2 $1 && (wait $1 || true)
 }
 
-pwd
-#cd "$(dirname "$0")/.."
-script/format_style.sh --dry-run
-
 if [ ! -x build/restserver ]
 then
     echo "Restserver binary not found! Exiting..."
     exit 1
 fi
+
+echo "==> Checking code style..."
+script/format_style.sh --dry-run
 
 echo "==> Generating security files..."
 generate_key_and_certificate "private.key" "certificate.pem"
@@ -91,48 +89,16 @@ echo "==> Starting restserver(-s)..."
 REGULAR_RESTSERVER_PID=$(run_restserver "regular")
 SECURE_RESTSERVER_PID=$(run_restserver "secure" "-c ./tests-rest/secure.cfg")
 
-echo "%%%%%%%%%%%%%%%%%%%%%%%"
-pwd
-ls -la 
-echo "%%%%%%%%%%%%%%%%%%%%%%%"
-
 echo "==> Running coverage tests..."
-cd tests-rest
-if npm install && npm test
+if cd tests-rest && npm install && npm test
 then
     coverage_tests_status=0
 else
     coverage_tests_status=1
 fi
-cd ..
 
 echo "==> Stopping restserver(-s)..."
 stop_restserver $REGULAR_RESTSERVER_PID
 stop_restserver $SECURE_RESTSERVER_PID
-
-#sleep_interval=0.1
-#sleep_time=5
-#for time_slept in $(seq 0.0 ${sleep_interval} ${sleep_time})
-#do
-#    if [ -d "../regular" ]; then
-#        printf "regular exists "
-#    else
-#        mkdir ../regular
-#    fi
-#    if [ -d "../secure" ]; then
-#        printf "secure exists "
-#    fi
-#    printf "\n"
-#    if [ -d "../regular" ] && [ -d "../secure" ]; then
-#        echo "Time until both folders appeared: ${time_slept}"
-#        break;
-#    fi
-#    sleep ${sleep_interval}
-#done
-
-echo "%%%%%%%%%%%%%%%%%%%%%%%"
-pwd
-ls -la
-echo "%%%%%%%%%%%%%%%%%%%%%%%"
 
 exit $coverage_tests_status
