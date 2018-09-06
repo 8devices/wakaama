@@ -54,6 +54,7 @@ run_restserver () {
     restserver_command="build/restserver ${initial_restserver_arguments}"
 
     if ! [ -z "$1" ]; then
+        mkdir "../$1"
         coverage_prefix="GCOV_PREFIX_STRIP=5 GCOV_PREFIX=$1"
         restserver_command="${coverage_prefix} ${restserver_command}"
     fi
