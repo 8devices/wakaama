@@ -24,7 +24,7 @@
 
 #include <cstring>
 
-#include "ulfius_http_framework.h"
+#include "ulfius_http_framework.hpp"
 
 std::map<std::string, std::string> ulfiusToStdMap(struct _u_map *ulfius_map)
 {

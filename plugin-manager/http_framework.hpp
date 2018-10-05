@@ -27,11 +27,10 @@
 
 #include <string>
 
-#include "request.h"
-#include "response.h"
+#include "request.hpp"
+#include "response.hpp"
 
 typedef StatusCode (*callback_function_t)(const Request&, Response&, void*);
-typedef int (*ulfius_callback_function_t)(const struct _u_request *, struct _u_response *, void *);
 
 class HttpFramework
 {
