@@ -87,7 +87,6 @@ install_dependencies () {
 }
 
 install_libjwt () {
-    TMP_BUILD_DIR=`mktemp -d`
     git clone --quiet -b v1.9.0 --single-branch https://github.com/benmcollins/libjwt
     if ! [ $? -eq 0 ]; then
         echo "Failed to obtain libjwt!"
