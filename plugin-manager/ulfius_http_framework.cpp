@@ -59,7 +59,6 @@ IncomingUlfiusRequest::IncomingUlfiusRequest (const struct _u_request *u_request
     method = u_request->http_verb;
     headers = ulfiusToStdMap(u_request->map_header);
     body = vector_body;
-    free(uint_body);
 }
 std::string IncomingUlfiusRequest::getPath() const
 {
@@ -103,7 +102,7 @@ void OutgoingUlfiusResponse::setBody(std::vector<uint8_t> binary_data)
 }
 void OutgoingUlfiusResponse::setCode(StatusCode code)
 {
-    ulfius_response->status = static_cast<int>(status_code);
+    ulfius_response->status = static_cast<int>(code);
 }
 void OutgoingUlfiusResponse::setHeader(const std::string header, const std::string value)
 {
@@ -126,6 +125,9 @@ UlfiusHttpFramework::UlfiusHttpFramework(int port)
 UlfiusHttpFramework::~UlfiusHttpFramework()
 {
     ulfius_clean_instance(&ulfius_instance);
+    for (auto & callbackHandler : callbackHandlers) {
+        delete callbackHandler;
+    }
 }
 void UlfiusHttpFramework::startFramework()
 {
@@ -182,8 +184,9 @@ void UlfiusHttpFramework::addHandler(
     const std::string method, const std::string url_prefix,
     unsigned int priority, callback_function_t handler_function, void *handler_context)
 {
-    CallbackHandler handler(handler_function, handler_context);
+    CallbackHandler *handler = new CallbackHandler(handler_function, handler_context);
+    callbackHandlers.push_back(handler);
     ulfius_add_endpoint_by_val(&ulfius_instance, method.c_str(),
                                url_prefix.c_str(), NULL, priority, &ulfiusCallback,
-                               reinterpret_cast<void *>(&handler));
+                               reinterpret_cast<void *>(handler));
 }

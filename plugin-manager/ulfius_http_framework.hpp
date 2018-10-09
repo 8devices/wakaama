@@ -87,5 +87,6 @@ private:
     static int ulfiusCallback(const struct _u_request *u_request,
                               struct _u_response *u_response, void *context);
 
+    std::vector<CallbackHandler *> callbackHandlers;
     struct _u_instance ulfius_instance;
 };
