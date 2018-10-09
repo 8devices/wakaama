@@ -16,6 +16,7 @@ express_server.listen(9997);
 
 describe('Subscriptions interface', function () {
   const client = new ClientInterface();
+  const queue_client = new ClientInterface('queue_test', true);
 
   before(function (done) {
     var self = this;
@@ -46,12 +47,15 @@ describe('Subscriptions interface', function () {
        });
 
     client.connect(server.address(), (err, res) => {
-      done();
+      queue_client.connect(server.address(), (err, res) => {
+        done();
+      });
     });
   });
 
   after(function () {
     client.disconnect();
+    queue_client.disconnect();
     chai.request(server)
       .delete('/notification/callback')
       .end(function (err, res) {
@@ -334,6 +338,56 @@ describe('Subscriptions interface', function () {
                 });
             });
         });
+    });
+  });
+
+  describe('PUT two resources to mix up subscriptions', function() {
+    it('should return 5701 resource notification instead of 5700', function (done) {
+      const self = this;
+      let id_one, id_two, async_response_count;
+      let async_responses_handler = function(response) {
+        async_response_count += 1;
+        if (async_response_count === 2) {
+          self.events.removeListener('async-responses', async_responses_handler);
+        }
+
+        if (response['id'] === id_one) {
+          response['payload'].should.be.eql('5BZEQaAAAA==');
+        } else if (response['id'] === id_two) {
+          response['payload'].should.be.eql('5BZFw4iAAA==');
+          done();
+        }
+      }
+
+      chai.request(server)
+        .put('/subscriptions/' + queue_client.name + '/3303/0/5700')
+        .end(function (err, res) {
+          should.not.exist(err);
+          res.should.have.status(202);
+          queue_client.updateHandler()
+          id_one = res.body['async-response-id'];
+
+          chai.request(server)
+            .delete('/subscriptions/' + queue_client.name + '/3303/0/5700')
+            .end(function (err, res) {
+              should.not.exist(err);
+              res.should.have.status(204);
+
+              chai.request(server)
+                .put('/subscriptions/' + queue_client.name + '/3303/0/5701')
+                .end(function (err, res) {
+                  should.not.exist(err);
+                  res.should.have.status(202);
+                  id_two = res.body['async-response-id'];
+
+                  queue_client.temperature = 0
+                  queue_client.updateHandler()
+                });
+            });
+        });
+
+      async_response_count = 0;
+      self.events.on('async-responses', async_responses_handler);
     });
   });
 });
