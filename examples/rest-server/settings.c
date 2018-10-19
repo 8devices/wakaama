@@ -348,8 +348,8 @@ static int set_plugin_settings(json_t *j_plugin_settings, rest_list_t *plugins_l
         fprintf(stdout, "Plugin configured without name.\n");
         return 1;
     }
-    plugin_name_length = json_string_length(j_name);
-    if (plugin_name_length == 0 || plugin_name_length >= J_MAX_LENGTH_PLUGIN_NAME)
+    plugin_name_length = strnlen(json_string_value(j_name), J_MAX_LENGTH_PLUGIN_NAME);
+    if (plugin_name_length == 0 || plugin_name_length == J_MAX_LENGTH_PLUGIN_NAME)
     {
         fprintf(stdout, "Plugin name length is invalid\n");
         return 1;
@@ -360,8 +360,8 @@ static int set_plugin_settings(json_t *j_plugin_settings, rest_list_t *plugins_l
         fprintf(stdout, "Plugin configured without path.\n");
         return 1;
     }
-    plugin_path_length = json_string_length(j_path);
-    if (plugin_path_length == 0 || plugin_path_length >= J_MAX_LENGTH_PLUGIN_PATH)
+    plugin_path_length = strnlen(json_string_value(j_path), J_MAX_LENGTH_PLUGIN_NAME);
+    if (plugin_path_length == 0 || plugin_path_length == J_MAX_LENGTH_PLUGIN_PATH)
     {
         fprintf(stdout, "Plugin path length is invalid\n");
         return 1;
