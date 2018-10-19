@@ -27,7 +27,6 @@
 
 #include "../include/basic_plugin_manager_core.hpp"
 #include "../include/basic_plugin_manager.hpp"
-#include "../include/plugin_api.hpp"
 
 #ifdef __cplusplus
 extern "C" {
@@ -75,9 +74,9 @@ BasicPluginManager::BasicPluginManager(PluginManagerCore *plugin_core):
 }
 BasicPluginManager::~BasicPluginManager()
 {
-    std::map<std::string, Plugin *>::iterator plugins_iterator;
+    std::map<std::string, std::pair<Plugin *, plugin_api_t *> >::iterator plugins_iterator;
 
-    for ( plugins_iterator = plugins.begin(); plugins_iterator != plugins.end(); ++plugins_iterator )
+    for (plugins_iterator = plugins.begin(); plugins_iterator != plugins.end(); ++plugins_iterator)
     {
         unloadPlugin(plugins_iterator->first);
     }
@@ -116,20 +115,26 @@ bool BasicPluginManager::loadPlugin(std::string path, std::string name)
         return false;
     }
 
-    plugins[name] = plugin;
+    plugins[name] = std::make_pair(plugin, plugin_api);
 
     return true;
 }
 bool BasicPluginManager::unloadPlugin(std::string name)
 {
-    std::map<std::string, Plugin *>::iterator plugins_iterator = plugins.find(name);
+    std::map<std::string, std::pair<Plugin *, plugin_api_t *> >::iterator plugins_iterator = plugins.find(name);
+    Plugin *plugin;
+    plugin_api_t *plugin_api;
 
     if (plugins_iterator == plugins.end())
     {
         return false;
     }
 
-    delete plugins_iterator->second;
+    plugin = plugins_iterator->second.first;
+    plugin_api = plugins_iterator->second.second;
+
+    plugin_api->destroy(plugin);
+
     plugins.erase(plugins_iterator);
 
     return true;

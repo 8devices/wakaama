@@ -37,7 +37,7 @@ public:
 
 private:
     PluginManagerCore *core;
-    std::map<std::string, Plugin *> plugins;
+    std::map<std::string, std::pair<Plugin *, plugin_api_t *> > plugins;
 };
 
 #endif // BASIC_PLUGIN_MANAGER_HPP 

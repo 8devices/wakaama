@@ -29,6 +29,7 @@
 #include <string>
 
 #include "plugin_manager_core.hpp"
+#include "plugin_api.hpp"
 #include "plugin.hpp"
 
 class PluginManager
@@ -41,7 +42,7 @@ public:
 
 protected:
     PluginManagerCore *core;
-    std::map<std::string, Plugin *> plugins;
+    std::map<std::string, std::pair<Plugin *, plugin_api_t *> > plugins;
 };
 
 #endif // PLUGIN_MANAGER_HPP 
