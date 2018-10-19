@@ -22,43 +22,26 @@
  * SOFTWARE.
  */
 
-#ifndef RESPONSE_H
-#define RESPONSE_H
+#ifndef REQUEST_H
+#define REQUEST_H
 
-#include <map>
-#include <string>
-#include <vector>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdint.h>
 
-enum StatusCode {
-    unknown = 0,
-    information_continue = 100,
-    success_ok = 200,
-    success_created = 201,
-    success_accepted = 202,
-    success_no_content = 204,
-    success_reset_content = 205,
-    client_error = 400,
-    client_error_unauthorized = 401,
-    client_error_forbidden = 403,
-    client_error_not_found = 404,
-    client_error_method_not_allowed = 405,
-    client_error_not_acceptable = 406,
-    server_error_internal_server_error = 500
-};
+struct CRequest;
+typedef struct CRequest CRequest;
 
-class Response
-{
-public:
-    virtual void setBody(std::vector<uint8_t> binary_data) = 0;
-    virtual void setCode(StatusCode code) = 0;
-    virtual void setHeader(const std::string header, const std::string value) = 0;
+void delete_Request(CRequest *c_request);
+char *Request_getPath(CRequest *c_request);
+char *Request_getMethod(CRequest *c_request);
+char *Request_getHeader(CRequest *c_request, const char *c_header);
+uint8_t *Request_getBody(CRequest *c_request);
 
-protected:
-    StatusCode status_code;
-    std::vector<uint8_t> body;
-    std::map<std::string, std::string> headers;
-};
+#ifdef __cplusplus
+}
+#endif
 
-#endif // RESPONSE_H
+#endif // REQUEST_H

@@ -22,54 +22,21 @@
  * SOFTWARE.
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef BASIC_PLUGIN_MANAGER_CORE_H
+#define BASIC_PLUGIN_MANAGER_CORE_H
 
-#include <stdint.h>
-#include <string.h>
-#include <jansson.h>
-#include <argp.h>
+#include "ulfius.h"
 
-#include "logging.h"
-#include "security.h"
+#include "../../http-framework/include/ulfius_http_framework.h"
+#include "../../lwm2m-framework/include/basic_lwm2m_framework.h"
 
-#include "../../plugin-manager/include/basic_plugin_manager.h"
+struct CBasicPluginManagerCore;
+typedef struct CBasicPluginManagerCore CBasicPluginManagerCore;
 
-typedef struct
-{
-    uint16_t port;
-    http_security_settings_t security;
-} http_settings_t;
+CBasicPluginManagerCore *new_BasicPluginManagerCore(struct _u_instance *ulfius_instance,
+                                                    void *lwm2m_context);
+void delete_BasicPluginManagerCore(CBasicPluginManagerCore *c_manager_core);
+CUlfiusHttpFramework *BasicPluginManagerCore_getHttpFramework(CBasicPluginManagerCore *c_manager_core);
+CBasicLwm2mFramework *BasicPluginManagerCore_getLwm2mFramework(CBasicPluginManagerCore *c_manager_core);
 
-typedef struct
-{
-    uint16_t port;
-} coap_settings_t;
-
-typedef struct
-{
-    const char *name;
-    const char *path;
-} plugin_settings_t;
-
-typedef struct
-{
-    rest_list_t *plugins_list;
-} plugins_settings_t;
-
-typedef struct
-{
-    http_settings_t http;
-    coap_settings_t coap;
-    logging_settings_t logging;
-    plugins_settings_t plugins;
-} settings_t;
-
-int read_config(char *config_name, settings_t *settings);
-
-error_t parse_opt(int key, char *arg, struct argp_state *state);
-
-int settings_init(int argc, char *argv[], settings_t *settings);
-
-#endif // SETTINGS_H
-
+#endif // BASIC_PLUGIN_MANAGER_CORE_H

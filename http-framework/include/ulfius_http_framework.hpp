@@ -23,17 +23,10 @@
  */
 
 
+#ifndef ULFIUS_HTTP_FRAMEWORK_HPP
+#define ULFIUS_HTTP_FRAMEWORK_HPP
+
 #include "http_framework.hpp"
-
-#ifdef __cplusplus
-extern "C"{
-#endif
-
-#include <ulfius.h>
-
-#ifdef __cplusplus
-}
-#endif
 
 typedef int (*ulfius_callback_function_t)(const struct _u_request *, struct _u_response *, void *);
 
@@ -42,19 +35,23 @@ std::map<std::string, std::string> ulfiusToStdMap(struct _u_map *ulfius_map);
 class IncomingUlfiusRequest: public Request
 {
 public:
-    IncomingUlfiusRequest (const struct _u_request *u_request);
-    std::string getPath() const;
-    std::string getMethod() const;
+    IncomingUlfiusRequest(const struct _u_request *u_request);
+    ~IncomingUlfiusRequest();
+
+    std::string getPath();
+    std::string getMethod();
     std::string getHeader(const std::string header);
-    std::vector<uint8_t> getBody() const;
+    std::vector<uint8_t> getBody();
 };
 
 class OutgoingUlfiusResponse: public Response
 {
 public:
     OutgoingUlfiusResponse(struct _u_response *u_response);
+    ~OutgoingUlfiusResponse();
+
     void setBody(std::vector<uint8_t> binary_data);
-    void setCode(StatusCode code);
+    void setCode(const StatusCode code);
     void setHeader(const std::string header, const std::string value);
 
 private:
@@ -72,20 +69,25 @@ public:
 class UlfiusHttpFramework: public HttpFramework
 {
 public:
-    UlfiusHttpFramework(int port);
+    UlfiusHttpFramework(struct _u_instance *instance);
     ~UlfiusHttpFramework();
 
     void startFramework();
-    void startSecureFramework(char *private_key_file, char *certificate_file);
+    void startSecureFramework(std::string private_key_file, std::string certificate_file);
     void stopFramework();
 
-    void addHandler(
-        const std::string method, const std::string url_prefix,
-        unsigned int priority, callback_function_t handler_function, void *handler_context);
+    void addHandler(const std::string method,
+                    const std::string url_prefix,
+                    unsigned int priority,
+                    callback_function_t handler_function,
+                    void *handler_context);
 
 private:
     static int ulfiusCallback(const struct _u_request *u_request,
                               struct _u_response *u_response, void *context);
 
-    struct _u_instance ulfius_instance;
+    std::vector<CallbackHandler *> callbackHandlers;
+    struct _u_instance *ulfius_instance;
 };
+
+#endif // ULFIUS_HTTP_FRAMEWORK_HPP

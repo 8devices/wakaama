@@ -22,54 +22,26 @@
  * SOFTWARE.
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef PLUGIN_MANAGER_HPP 
+#define PLUGIN_MANAGER_HPP 
 
-#include <stdint.h>
-#include <string.h>
-#include <jansson.h>
-#include <argp.h>
+#include <list>
+#include <string>
 
-#include "logging.h"
-#include "security.h"
+#include "plugin_manager_core.hpp"
+#include "plugin.hpp"
 
-#include "../../plugin-manager/include/basic_plugin_manager.h"
-
-typedef struct
+class PluginManager
 {
-    uint16_t port;
-    http_security_settings_t security;
-} http_settings_t;
+public:
+    virtual ~PluginManager() { }
 
-typedef struct
-{
-    uint16_t port;
-} coap_settings_t;
+    virtual bool loadPlugin(std::string name, std::string path) = 0;
+    virtual bool unloadPlugin(std::string name) = 0;
 
-typedef struct
-{
-    const char *name;
-    const char *path;
-} plugin_settings_t;
+protected:
+    PluginManagerCore *core;
+    std::map<std::string, Plugin *> plugins;
+};
 
-typedef struct
-{
-    rest_list_t *plugins_list;
-} plugins_settings_t;
-
-typedef struct
-{
-    http_settings_t http;
-    coap_settings_t coap;
-    logging_settings_t logging;
-    plugins_settings_t plugins;
-} settings_t;
-
-int read_config(char *config_name, settings_t *settings);
-
-error_t parse_opt(int key, char *arg, struct argp_state *state);
-
-int settings_init(int argc, char *argv[], settings_t *settings);
-
-#endif // SETTINGS_H
-
+#endif // PLUGIN_MANAGER_HPP 

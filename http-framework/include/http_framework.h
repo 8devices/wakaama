@@ -25,19 +25,27 @@
 #ifndef HTTP_FRAMEWORK_H
 #define HTTP_FRAMEWORK_H
 
-#include <string>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "request.hpp"
-#include "response.hpp"
+#include "request.h"
+#include "response.h"
 
-typedef StatusCode (*callback_function_t)(const Request&, Response&, void*);
+typedef CStatusCode (*c_callback_function_t)(CRequest *, CResponse *, void*);
 
-class HttpFramework
-{
-public:
-    virtual void addHandler(
-        const std::string method, const std::string url_prefix,
-        unsigned int priority, callback_function_t handler_function, void *handler_context) = 0;
-};
+struct CHttpFramework;
+typedef struct CHttpFramework CHttpFramework;
+
+void HttpFramework_addHandler(CHttpFramework *c_http_framework,
+                              const char *method,
+                              const char *url_prefix,
+                              const unsigned int priority,
+                              c_callback_function_t c_handler_function,
+                              void *handler_context);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // HTTP_FRAMEWORK_H

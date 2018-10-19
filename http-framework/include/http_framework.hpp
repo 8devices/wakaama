@@ -22,29 +22,24 @@
  * SOFTWARE.
  */
 
-#ifndef REQUEST_H
-#define REQUEST_H
+#ifndef HTTP_FRAMEWORK_HPP
+#define HTTP_FRAMEWORK_HPP
 
-#include <map>
 #include <string>
-#include <vector>
 
-#include <stdint.h>
+#include "request.hpp"
+#include "response.hpp"
 
-class Request
+typedef StatusCode (*callback_function_t)(Request *, Response *, void*);
+
+class HttpFramework
 {
 public:
-    virtual std::string getPath() const = 0;
-    virtual std::string getMethod() const = 0;
-    virtual std::string getHeader(const std::string header) = 0;
-    virtual std::vector<uint8_t> getBody() const = 0;
+    virtual ~HttpFramework() { }
 
-protected:
-    std::string path;
-    std::string method;
-    std::map<std::string, std::string> headers;
-    std::vector<uint8_t> body;
+    virtual void addHandler(
+        const std::string method, const std::string url_prefix,
+        unsigned int priority, callback_function_t handler_function, void *handler_context) = 0;
 };
 
-#endif // REQUEST_H
-
+#endif // HTTP_FRAMEWORK_HPP

@@ -22,54 +22,35 @@
  * SOFTWARE.
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#include "../include/basic_lwm2m_framework.hpp"
 
-#include <stdint.h>
-#include <string.h>
-#include <jansson.h>
-#include <argp.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "logging.h"
-#include "security.h"
+#include "../include/basic_lwm2m_framework.h"
 
-#include "../../plugin-manager/include/basic_plugin_manager.h"
-
-typedef struct
+CBasicLwm2mFramework *new_BasicLwm2mFramework(void *lwm2m_context)
 {
-    uint16_t port;
-    http_security_settings_t security;
-} http_settings_t;
-
-typedef struct
+    return reinterpret_cast<CBasicLwm2mFramework *>(new BasicLwm2mFramework(lwm2m_context));
+}
+void delete_BasicLwm2mFramework(CBasicLwm2mFramework *c_lwm2m_framework)
 {
-    uint16_t port;
-} coap_settings_t;
+    delete reinterpret_cast<BasicLwm2mFramework *>(c_lwm2m_framework);
+}
 
-typedef struct
+#ifdef __cplusplus
+} // extern "C"
+#endif
+
+BasicLwm2mFramework::BasicLwm2mFramework(void *lwm2m_context)
 {
-    const char *name;
-    const char *path;
-} plugin_settings_t;
-
-typedef struct
+    context = lwm2m_context;
+}
+BasicLwm2mFramework::~BasicLwm2mFramework()
 {
-    rest_list_t *plugins_list;
-} plugins_settings_t;
-
-typedef struct
+}
+void *BasicLwm2mFramework::getContext()
 {
-    http_settings_t http;
-    coap_settings_t coap;
-    logging_settings_t logging;
-    plugins_settings_t plugins;
-} settings_t;
-
-int read_config(char *config_name, settings_t *settings);
-
-error_t parse_opt(int key, char *arg, struct argp_state *state);
-
-int settings_init(int argc, char *argv[], settings_t *settings);
-
-#endif // SETTINGS_H
-
+    return context;
+}
