@@ -22,23 +22,18 @@
  * SOFTWARE.
  */
 
-#ifndef ULFIUS_HTTP_FRAMEWORK_H
-#define ULFIUS_HTTP_FRAMEWORK_H
+#ifndef OUTGOING_ULFIUS_RESPONSE_H
+#define OUTGOING_ULFIUS_RESPONSE_H
 
-#include "http_framework.h"
+#include "response.h"
 
-struct CUlfiusHttpFramework;
-typedef struct CUlfiusHttpFramework CUlfiusHttpFramework;
-CUlfiusHttpFramework *new_UlfiusHttpFramework(struct _u_instance *instance);
-void delete_UlfiusHttpFramework(CUlfiusHttpFramework *c_framework);
-void UlfiusHttpFramework_startFramework(CUlfiusHttpFramework *c_framework);
-void UlfiusHttpFramework_startSecureFramework(
-    CUlfiusHttpFramework *c_framework, const char *c_private_key_file,
-    const char *c_certificate_file);
-void UlfiusHttpFramework_stopFramework(CUlfiusHttpFramework *c_framework);
-void UlfiusHttpFramework_addHandler(
-    CUlfiusHttpFramework *c_framework,
-    const char *method, const char *url_prefix,
-    unsigned int priority, c_callback_function_t handler_function, void *handler_context);
+struct COutgoingUlfiusResponse;
+typedef struct COutgoingUlfiusResponse COutgoingUlfiusResponse;
+COutgoingUlfiusResponse *new_OutgoingUlfiusResponse(struct _u_response *u_response);
+void delete_OutgoingUlfiusResponse(COutgoingUlfiusResponse *c_response);
+void OutgoingUlfiusResponse_setBody(COutgoingUlfiusResponse *c_response, uint8_t *c_binary_data, size_t size);
+void OutgoingUlfiusResponse_setCode(COutgoingUlfiusResponse *c_response, const CStatusCode c_code);
+void OutgoingUlfiusResponse_setHeader(COutgoingUlfiusResponse *c_response,
+                                      const char *c_header, const char *c_value);
 
-#endif // ULFIUS_HTTP_FRAMEWORK_H
+#endif // OUTGOING_ULFIUS_RESPONSE_H

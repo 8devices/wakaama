@@ -27,44 +27,9 @@
 #define ULFIUS_HTTP_FRAMEWORK_HPP
 
 #include "http_framework.hpp"
-
-typedef int (*ulfius_callback_function_t)(const struct _u_request *, struct _u_response *, void *);
+#include "callback_handler.hpp"
 
 std::map<std::string, std::string> ulfiusToStdMap(struct _u_map *ulfius_map);
-
-class IncomingUlfiusRequest: public Request
-{
-public:
-    IncomingUlfiusRequest(const struct _u_request *u_request);
-    ~IncomingUlfiusRequest();
-
-    std::string getPath();
-    std::string getMethod();
-    std::string getHeader(const std::string header);
-    std::vector<uint8_t> getBody();
-};
-
-class OutgoingUlfiusResponse: public Response
-{
-public:
-    OutgoingUlfiusResponse(struct _u_response *u_response);
-    ~OutgoingUlfiusResponse();
-
-    void setBody(std::vector<uint8_t> binary_data);
-    void setCode(const StatusCode code);
-    void setHeader(const std::string header, const std::string value);
-
-private:
-    struct _u_response *ulfius_response;
-};
-
-class CallbackHandler
-{
-public:
-    CallbackHandler(callback_function_t handler_function, void *handler_context);
-    callback_function_t function;
-    void *context;
-};
 
 class UlfiusHttpFramework: public HttpFramework
 {

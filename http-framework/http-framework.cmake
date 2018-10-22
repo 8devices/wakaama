@@ -2,6 +2,8 @@
 
 set(HTTP_FRAMEWORK_SOURCES_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 set(HTTP_FRAMEWORK_SOURCES
+    ${HTTP_FRAMEWORK_SOURCES_DIR}/incoming_ulfius_request.cpp
+    ${HTTP_FRAMEWORK_SOURCES_DIR}/outgoing_ulfius_response.cpp
     ${HTTP_FRAMEWORK_SOURCES_DIR}/ulfius_http_framework.cpp
     )
 

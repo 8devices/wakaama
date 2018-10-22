@@ -22,23 +22,24 @@
  * SOFTWARE.
  */
 
-#ifndef ULFIUS_HTTP_FRAMEWORK_H
-#define ULFIUS_HTTP_FRAMEWORK_H
 
-#include "http_framework.h"
+#ifndef OUTGOING_ULFIUS_RESPONSE_HPP
+#define OUTGOING_ULFIUS_RESPONSE_HPP
 
-struct CUlfiusHttpFramework;
-typedef struct CUlfiusHttpFramework CUlfiusHttpFramework;
-CUlfiusHttpFramework *new_UlfiusHttpFramework(struct _u_instance *instance);
-void delete_UlfiusHttpFramework(CUlfiusHttpFramework *c_framework);
-void UlfiusHttpFramework_startFramework(CUlfiusHttpFramework *c_framework);
-void UlfiusHttpFramework_startSecureFramework(
-    CUlfiusHttpFramework *c_framework, const char *c_private_key_file,
-    const char *c_certificate_file);
-void UlfiusHttpFramework_stopFramework(CUlfiusHttpFramework *c_framework);
-void UlfiusHttpFramework_addHandler(
-    CUlfiusHttpFramework *c_framework,
-    const char *method, const char *url_prefix,
-    unsigned int priority, c_callback_function_t handler_function, void *handler_context);
+#include "response.hpp"
 
-#endif // ULFIUS_HTTP_FRAMEWORK_H
+class OutgoingUlfiusResponse: public Response
+{
+public:
+    OutgoingUlfiusResponse(struct _u_response *u_response);
+    ~OutgoingUlfiusResponse();
+
+    void setBody(std::vector<uint8_t> binary_data);
+    void setCode(const StatusCode code);
+    void setHeader(const std::string header, const std::string value);
+
+private:
+    struct _u_response *ulfius_response;
+};
+
+#endif // OUTGOING_ULFIUS_RESPONSE_HPP
