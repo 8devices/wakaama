@@ -105,16 +105,13 @@ void UlfiusHttpFramework::stopFramework()
 int UlfiusHttpFramework::ulfiusCallback(const struct _u_request *u_request,
                                         struct _u_response *u_response, void *context)
 {
-    IncomingUlfiusRequest *request = new IncomingUlfiusRequest(u_request);
     StatusCode callback_status_code;
 
-    OutgoingUlfiusResponse *response = new OutgoingUlfiusResponse(u_response);
+    IncomingUlfiusRequest request(u_request);
+    OutgoingUlfiusResponse response(u_response);
 
     CallbackHandler *handler = reinterpret_cast<CallbackHandler *>(context);
-    callback_status_code = handler->function(request, response, handler->context);
-
-    delete request;
-    delete response;
+    callback_status_code = handler->function(&request, &response, handler->context);
 
     switch (callback_status_code)
     {
