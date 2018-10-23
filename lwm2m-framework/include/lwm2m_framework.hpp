@@ -33,9 +33,6 @@ public:
     virtual ~Lwm2mFramework() { }
 
     virtual void *getContext() = 0;
-
-protected:
-    void *context;
 };
 
 #endif // LWM2M_FRAMEWORK_HPP

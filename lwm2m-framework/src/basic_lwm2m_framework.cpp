@@ -43,13 +43,10 @@ void delete_BasicLwm2mFramework(CBasicLwm2mFramework *c_lwm2m_framework)
 } // extern "C"
 #endif
 
-BasicLwm2mFramework::BasicLwm2mFramework(void *lwm2m_context)
-{
-    context = lwm2m_context;
-}
+BasicLwm2mFramework::BasicLwm2mFramework(void *lwm2m_context):
+    context(lwm2m_context) { }
 BasicLwm2mFramework::~BasicLwm2mFramework()
-{
-}
+{ }
 void *BasicLwm2mFramework::getContext()
 {
     return context;
