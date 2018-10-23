@@ -373,13 +373,8 @@ int main(int argc, char *argv[])
 
     struct _u_instance instance;
 
-    CBasicPluginManagerCore *plugin_manager_core = new_BasicPluginManagerCore(&instance, &rest);
+    CBasicPluginManagerCore *plugin_manager_core = new_BasicPluginManagerCore(&instance, rest.lwm2m);
     CBasicPluginManager *plugin_manager = new_BasicPluginManager(plugin_manager_core);
-
-    load_plugins(plugin_manager, settings.plugins.plugins_list);
-
-    delete_BasicPluginManager(plugin_manager);
-    delete_BasicPluginManagerCore(plugin_manager_core);
 
     log_message(LOG_LEVEL_INFO, "Creating http socket on port %u\n", settings.http.port);
     if (ulfius_init_instance(&instance, settings.http.port, NULL, NULL) != U_OK)
@@ -392,6 +387,9 @@ int main(int argc, char *argv[])
      * mbed Device Connector based api
      * https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/api-reference/
      */
+
+    // Plugins
+    load_plugins(plugin_manager, settings.plugins.plugins_list);
 
     // Endpoints
     ulfius_add_endpoint_by_val(&instance, "GET", "/endpoints", NULL, 10,
@@ -543,6 +541,9 @@ int main(int argc, char *argv[])
 
     ulfius_stop_framework(&instance);
     ulfius_clean_instance(&instance);
+
+    delete_BasicPluginManager(plugin_manager);
+    delete_BasicPluginManagerCore(plugin_manager_core);
 
     lwm2m_close(rest.lwm2m);
     rest_cleanup(&rest);
