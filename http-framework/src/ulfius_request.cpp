@@ -24,7 +24,7 @@
 
 #include <cstring>
 
-#include "../include/incoming_ulfius_request.hpp"
+#include "../include/ulfius_request.hpp"
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,42 +32,42 @@ extern "C" {
 
 #include <ulfius.h>
 
-#include "../include/incoming_ulfius_request.h"
+#include "../include/ulfius_request.h"
 
-CIncomingUlfiusRequest *new_IncomingUlfiusRequest(const struct _u_request *u_request)
+CUlfiusRequest *new_UlfiusRequest(const struct _u_request *u_request)
 {
-    return reinterpret_cast<CIncomingUlfiusRequest *>(new IncomingUlfiusRequest(u_request));
+    return reinterpret_cast<CUlfiusRequest *>(new UlfiusRequest(u_request));
 }
-void delete_IncomingUlfiusRequest(CIncomingUlfiusRequest *c_request)
+void delete_UlfiusRequest(CUlfiusRequest *c_request)
 {
-    delete reinterpret_cast<IncomingUlfiusRequest *>(c_request);
+    delete reinterpret_cast<UlfiusRequest *>(c_request);
 }
-char *IncomingUlfiusRequest_getPath(CIncomingUlfiusRequest *c_request)
+char *UlfiusRequest_getPath(CUlfiusRequest *c_request)
 {
-    IncomingUlfiusRequest *request = reinterpret_cast<IncomingUlfiusRequest*>(c_request);
+    UlfiusRequest *request = reinterpret_cast<UlfiusRequest*>(c_request);
     std::string path = request->getPath();
 
     return const_cast<char *>(path.c_str());
 }
-char *IncomingUlfiusRequest_getMethod(CIncomingUlfiusRequest *c_request)
+char *UlfiusRequest_getMethod(CUlfiusRequest *c_request)
 {
-    IncomingUlfiusRequest *request = reinterpret_cast<IncomingUlfiusRequest*>(c_request);
+    UlfiusRequest *request = reinterpret_cast<UlfiusRequest*>(c_request);
     std::string method = request->getMethod();
 
     return const_cast<char *>(method.c_str());
 }
-char *IncomingUlfiusRequest_getHeader(CIncomingUlfiusRequest *c_request, const char *c_header)
+char *UlfiusRequest_getHeader(CUlfiusRequest *c_request, const char *c_header)
 {
-    IncomingUlfiusRequest *request = reinterpret_cast<IncomingUlfiusRequest*>(c_request);
+    UlfiusRequest *request = reinterpret_cast<UlfiusRequest*>(c_request);
     const std::string header(c_header);
     std::string header_value = request->getHeader(header);
 
     return const_cast<char *>(header_value.c_str());
 }
-uint8_t *IncomingUlfiusRequest_getBody(CIncomingUlfiusRequest *c_request)
+uint8_t *UlfiusRequest_getBody(CUlfiusRequest *c_request)
 {
     // XXX: note that body should be freed after use!
-    IncomingUlfiusRequest *request = reinterpret_cast<IncomingUlfiusRequest*>(c_request);
+    UlfiusRequest *request = reinterpret_cast<UlfiusRequest*>(c_request);
     std::vector<uint8_t> body = request->getBody();
     uint8_t *c_body = static_cast<uint8_t *>(malloc(sizeof(uint8_t) * body.size()));
 
@@ -104,7 +104,7 @@ std::map<std::string, std::string> ulfiusToStdMap(struct _u_map *ulfius_map)
     return std_map;
 }
 
-IncomingUlfiusRequest::IncomingUlfiusRequest(const struct _u_request *u_request)
+UlfiusRequest::UlfiusRequest(const struct _u_request *u_request)
 {
     uint8_t *uint_body = (uint8_t*)u_request->binary_body;
     std::vector<uint8_t> vector_body(uint_body, uint_body + u_request->binary_body_length);
@@ -116,16 +116,16 @@ IncomingUlfiusRequest::IncomingUlfiusRequest(const struct _u_request *u_request)
     headers = ulfiusToStdMap(u_request->map_header);
     body = vector_body;
 }
-IncomingUlfiusRequest::~IncomingUlfiusRequest() { }
-std::string IncomingUlfiusRequest::getPath()
+UlfiusRequest::~UlfiusRequest() { }
+std::string UlfiusRequest::getPath()
 {
     return path;
 }
-std::string IncomingUlfiusRequest::getMethod()
+std::string UlfiusRequest::getMethod()
 {
      return method;
 }
-std::string IncomingUlfiusRequest::getHeader(const std::string header)
+std::string UlfiusRequest::getHeader(const std::string header)
 {
     std::string header_value;
     std::map<std::string, std::string>::iterator headers_iterator;
@@ -138,7 +138,7 @@ std::string IncomingUlfiusRequest::getHeader(const std::string header)
     }
     return header_value;
 }
-std::vector<uint8_t> IncomingUlfiusRequest::getBody()
+std::vector<uint8_t> UlfiusRequest::getBody()
 {
     return body;
 }

@@ -40,12 +40,6 @@ public:
     virtual std::string getMethod() = 0;
     virtual std::string getHeader(const std::string header) = 0;
     virtual std::vector<uint8_t> getBody() = 0;
-
-protected:
-    std::string path;
-    std::string method;
-    std::map<std::string, std::string> headers;
-    std::vector<uint8_t> body;
 };
 
 #endif // REQUEST_HPP

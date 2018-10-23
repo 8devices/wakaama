@@ -56,11 +56,6 @@ public:
     virtual void setBody(std::vector<uint8_t> binary_data) = 0;
     virtual void setCode(StatusCode code) = 0;
     virtual void setHeader(const std::string header, const std::string value) = 0;
-
-protected:
-    StatusCode status_code;
-    std::vector<uint8_t> body;
-    std::map<std::string, std::string> headers;
 };
 
 #endif // RESPONSE_HPP

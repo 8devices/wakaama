@@ -22,22 +22,18 @@
  * SOFTWARE.
  */
 
+#ifndef ULFIUS_REQUEST_H
+#define ULFIUS_REQUEST_H
 
-#ifndef INCOMING_ULFIUS_REQUEST_HPP
-#define INCOMING_ULFIUS_REQUEST_HPP
+#include "request.h"
 
-#include "request.hpp"
+struct CUlfiusRequest;
+typedef struct CUlfiusRequest CUlfiusRequest;
+CUlfiusRequest *new_UlfiusRequest(const struct _u_request *u_request);
+void delete_UlfiusRequest(CUlfiusRequest *c_request);
+char *UlfiusRequest_getPath(CUlfiusRequest *c_request);
+char *UlfiusRequest_getMethod(CUlfiusRequest *c_request);
+char *UlfiusRequest_getHeader(CUlfiusRequest *c_request, const char *c_header);
+uint8_t *UlfiusRequest_getBody(CUlfiusRequest *c_request);
 
-class IncomingUlfiusRequest: public Request
-{
-public:
-    IncomingUlfiusRequest(const struct _u_request *u_request);
-    ~IncomingUlfiusRequest();
-
-    std::string getPath();
-    std::string getMethod();
-    std::string getHeader(const std::string header);
-    std::vector<uint8_t> getBody();
-};
-
-#endif // INCOMING_ULFIUS_REQUEST_HPP
+#endif // ULFIUS_REQUEST_H

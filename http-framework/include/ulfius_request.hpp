@@ -22,18 +22,28 @@
  * SOFTWARE.
  */
 
-#ifndef INCOMING_ULFIUS_REQUEST_H
-#define INCOMING_ULFIUS_REQUEST_H
 
-#include "request.h"
+#ifndef ULFIUS_REQUEST_HPP
+#define ULFIUS_REQUEST_HPP
 
-struct CIncomingUlfiusRequest;
-typedef struct CIncomingUlfiusRequest CIncomingUlfiusRequest;
-CIncomingUlfiusRequest *new_IncomingUlfiusRequest(const struct _u_request *u_request);
-void delete_IncomingUlfiusRequest(CIncomingUlfiusRequest *c_request);
-char *IncomingUlfiusRequest_getPath(CIncomingUlfiusRequest *c_request);
-char *IncomingUlfiusRequest_getMethod(CIncomingUlfiusRequest *c_request);
-char *IncomingUlfiusRequest_getHeader(CIncomingUlfiusRequest *c_request, const char *c_header);
-uint8_t *IncomingUlfiusRequest_getBody(CIncomingUlfiusRequest *c_request);
+#include "request.hpp"
 
-#endif // INCOMING_ULFIUS_REQUEST_H
+class UlfiusRequest: public Request
+{
+public:
+    UlfiusRequest(const struct _u_request *u_request);
+    ~UlfiusRequest();
+
+    std::string getPath();
+    std::string getMethod();
+    std::string getHeader(const std::string header);
+    std::vector<uint8_t> getBody();
+
+private:
+    std::string path;
+    std::string method;
+    std::map<std::string, std::string> headers;
+    std::vector<uint8_t> body;
+};
+
+#endif // ULFIUS_REQUEST_HPP

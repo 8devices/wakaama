@@ -25,8 +25,8 @@
 #include <cstring>
 
 #include "../include/ulfius_http_framework.hpp"
-#include "../include/incoming_ulfius_request.hpp"
-#include "../include/outgoing_ulfius_response.hpp"
+#include "../include/ulfius_request.hpp"
+#include "../include/ulfius_response.hpp"
 
 #ifdef __cplusplus
 extern "C" {
@@ -105,16 +105,12 @@ void UlfiusHttpFramework::stopFramework()
 int UlfiusHttpFramework::ulfiusCallback(const struct _u_request *u_request,
                                         struct _u_response *u_response, void *context)
 {
-    IncomingUlfiusRequest *request = new IncomingUlfiusRequest(u_request);
+    UlfiusRequest request(u_request);
+    UlfiusResponse response(u_response);
     StatusCode callback_status_code;
 
-    OutgoingUlfiusResponse *response = new OutgoingUlfiusResponse(u_response);
-
     CallbackHandler *handler = reinterpret_cast<CallbackHandler *>(context);
-    callback_status_code = handler->function(request, response, handler->context);
-
-    delete request;
-    delete response;
+    callback_status_code = handler->function(&request, &response, handler->context);
 
     switch (callback_status_code)
     {

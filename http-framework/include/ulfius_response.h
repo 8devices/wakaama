@@ -22,24 +22,18 @@
  * SOFTWARE.
  */
 
+#ifndef ULFIUS_RESPONSE_H
+#define ULFIUS_RESPONSE_H
 
-#ifndef OUTGOING_ULFIUS_RESPONSE_HPP
-#define OUTGOING_ULFIUS_RESPONSE_HPP
+#include "response.h"
 
-#include "response.hpp"
+struct CUlfiusResponse;
+typedef struct CUlfiusResponse CUlfiusResponse;
+CUlfiusResponse *new_UlfiusResponse(struct _u_response *u_response);
+void delete_UlfiusResponse(CUlfiusResponse *c_response);
+void UlfiusResponse_setBody(CUlfiusResponse *c_response, uint8_t *c_binary_data, size_t size);
+void UlfiusResponse_setCode(CUlfiusResponse *c_response, const CStatusCode c_code);
+void UlfiusResponse_setHeader(CUlfiusResponse *c_response,
+                                      const char *c_header, const char *c_value);
 
-class OutgoingUlfiusResponse: public Response
-{
-public:
-    OutgoingUlfiusResponse(struct _u_response *u_response);
-    ~OutgoingUlfiusResponse();
-
-    void setBody(std::vector<uint8_t> binary_data);
-    void setCode(const StatusCode code);
-    void setHeader(const std::string header, const std::string value);
-
-private:
-    struct _u_response *ulfius_response;
-};
-
-#endif // OUTGOING_ULFIUS_RESPONSE_HPP
+#endif // ULFIUS_RESPONSE_H
