@@ -107,8 +107,8 @@ int UlfiusHttpFramework::ulfiusCallback(const struct _u_request *u_request,
 {
     StatusCode callback_status_code;
 
-    IncomingUlfiusRequest request(u_request);
-    OutgoingUlfiusResponse response(u_response);
+    UlfiusRequest request(u_request);
+    UlfiusResponse response(u_response);
 
     CallbackHandler *handler = reinterpret_cast<CallbackHandler *>(context);
     callback_status_code = handler->function(&request, &response, handler->context);
