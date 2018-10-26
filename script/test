@@ -28,6 +28,7 @@ set -e
 BASE_DIR="$(dirname "$0")/.."
 
 build_test_plugins () {
+    cd ${BASE_DIR}
     cd "tests-rest/plugins/test-plugin"
 
     cmake ./
@@ -37,6 +38,7 @@ build_test_plugins () {
 }
 
 generate_key_and_certificate () {
+    cd ${BASE_DIR}
     if [ "$#" -ne 2 ]; then
         echo "Illegal number of parameters"
         return 1
@@ -60,6 +62,7 @@ generate_key_and_certificate () {
 }
 
 run_restserver () {
+    cd ${BASE_DIR}
     initial_restserver_arguments=""
     restserver_command="build/restserver ${initial_restserver_arguments}"
 
