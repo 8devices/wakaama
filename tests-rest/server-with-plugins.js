@@ -1,6 +1,6 @@
 var server = require('./server-if');
 
-var server_with_plugins = server;
+var server_with_plugins = Object.assign({}, server);
 
 server_with_plugins.address = function () {
   var addr = {};
