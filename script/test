@@ -25,20 +25,21 @@
 
 set -e
 
-BASE_DIR="$(dirname "$0")/.."
+BASE_DIR="$( cd "$(dirname "$0")/.."; pwd -P )"
 
 build_test_plugins () {
-    cd ${BASE_DIR}
-    cd "tests-rest/plugins/test-plugin"
+    cd "${BASE_DIR}/tests-rest/plugins/test-plugin"
 
     cmake ./
     make
+
+    cd "${BASE_DIR}"
 
     return 0
 }
 
 generate_key_and_certificate () {
-    cd ${BASE_DIR}
+    cd "${BASE_DIR}"
     if [ "$#" -ne 2 ]; then
         echo "Illegal number of parameters"
         return 1
@@ -62,7 +63,7 @@ generate_key_and_certificate () {
 }
 
 run_restserver () {
-    cd ${BASE_DIR}
+    cd "${BASE_DIR}"
     initial_restserver_arguments=""
     restserver_command="build/restserver ${initial_restserver_arguments}"
 
@@ -86,7 +87,7 @@ stop_restserver () {
     wait $1 || true
 }
 
-cd ${BASE_DIR}
+cd "${BASE_DIR}"
 script/format_style.sh --dry-run
 
 if [ ! -x build/restserver ]
