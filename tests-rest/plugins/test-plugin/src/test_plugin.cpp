@@ -49,7 +49,7 @@ StatusCode stamp(Request *request, Response *response, void *context)
     std::vector<uint8_t> response_body;
     StatusCode status_code = success_ok;
     
-    response->setHeader("TestStatus", "is_successful");
+    response->setHeader("Test-status", "success");
   
     if (method == "GET")
     {
@@ -90,7 +90,7 @@ StatusCode stamp(Request *request, Response *response, void *context)
     }
     else
     {
-        response->setHeader("TestStatus", "is_unsuccessful");
+        response->setHeader("Test-status", "fail");
 
         status_code = client_error_method_not_allowed;
     }
