@@ -338,7 +338,6 @@ static int set_plugin_settings(json_t *j_plugin_settings, rest_list_t *plugins_l
     json_t *j_name, *j_path;
 
     int counter = 0;
-    printf("Incoming %d...\n", counter++);
 
     j_name = json_object_get(j_plugin_settings, "name");
     j_path = json_object_get(j_plugin_settings, "path");
@@ -383,8 +382,6 @@ static int set_plugin_settings(json_t *j_plugin_settings, rest_list_t *plugins_l
             return 1;
         }
     }
-
-    printf("Incoming %d... sp:%s, sn:%s\n", counter++, plugin->path, plugin->name);
 
     rest_list_add(plugins_list, plugin);
 
