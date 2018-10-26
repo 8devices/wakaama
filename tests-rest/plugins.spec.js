@@ -15,9 +15,11 @@ describe('Plugins interface', function () {
     var self = this;
 
     server.start();
+    done();
   });
 
   after(function () {
+    done();
   });
 
   describe('GET /{plugin_api}/stamp', function () {
