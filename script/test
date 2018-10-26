@@ -25,6 +25,17 @@
 
 set -e
 
+BASE_DIR="$(dirname "$0")/.."
+
+build_test_plugins () {
+    cd "tests-rest/plugins/test-plugin"
+
+    cmake ./
+    make
+
+    return 0
+}
+
 generate_key_and_certificate () {
     if [ "$#" -ne 2 ]; then
         echo "Illegal number of parameters"
@@ -72,7 +83,7 @@ stop_restserver () {
     wait $1 || true
 }
 
-cd "$(dirname "$0")/.."
+cd ${BASE_DIR}
 script/format_style.sh --dry-run
 
 if [ ! -x build/restserver ]
@@ -81,6 +92,9 @@ then
     exit 1
 fi
 
+echo "==> Building test plugins..."
+build_test_plugins
+
 echo "==> Generating security files..."
 generate_key_and_certificate "private.key" "certificate.pem"
 generate_key_and_certificate "other_private.key" "other_certificate.pem"
@@ -88,6 +102,7 @@ generate_key_and_certificate "other_private.key" "other_certificate.pem"
 echo "==> Starting restserver(-s)..."
 REGULAR_RESTSERVER_PID=$(run_restserver "regular")
 SECURE_RESTSERVER_PID=$(run_restserver "secure" "-c ./tests-rest/secure.cfg")
+PLUGINS_RESTSERVER_PID=$(run_restserver "plugins" "-c ./tests-rest/plugins.cfg")
 
 echo "==> Running coverage tests..."
 if cd tests-rest && npm install && npm test
@@ -100,4 +115,5 @@ fi
 echo "==> Stopping restserver(-s)..."
 stop_restserver $REGULAR_RESTSERVER_PID
 stop_restserver $SECURE_RESTSERVER_PID
+stop_restserver $PLUGINS_RESTSERVER_PID
 exit $coverage_tests_status
