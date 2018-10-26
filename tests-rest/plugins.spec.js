@@ -19,7 +19,6 @@ describe('Plugins interface', function () {
   });
 
   after(function () {
-    done();
   });
 
   describe('GET /{plugin_api}/stamp', function () {
@@ -32,8 +31,8 @@ describe('Plugins interface', function () {
           res.should.have.status(200);
           res.should.have.header('test-status', 'success');
 
-          res.body.should.be.a('string');
-          res.body.should.be.eql(stamp_value);
+          res.text.should.be.a('string');
+          res.text.should.be.eql(stamp_value);
 
           done();
         });
@@ -47,7 +46,7 @@ describe('Plugins interface', function () {
 
       chai.request(server)
         .put('/' + PLUGIN_API + '/stamp')
-        .send(Buffer.from(stamp_value))
+        .send(stamp_value)
         .end(function (err, res) {
           should.not.exist(err);
           res.should.have.status(204);
@@ -60,8 +59,8 @@ describe('Plugins interface', function () {
               res.should.have.status(200);
               res.should.have.header('test-status', 'success');
 
-              res.body.should.be.a('string');
-              res.body.should.be.eql(stamp_value);
+              res.text.should.be.a('string');
+              res.text.should.be.eql(stamp_value);
 
               done();
             });
@@ -74,16 +73,16 @@ describe('Plugins interface', function () {
 
     it('should append stamp to request body and receive 200 code', function(done) {
       chai.request(server)
-        .put('/' + PLUGIN_API + '/stamp')
+        .post('/' + PLUGIN_API + '/stamp')
         .set('Append', 'true')
-        .send(Buffer.from(body_value))
+        .send(body_value)
         .end(function (err, res) {
           should.not.exist(err);
           res.should.have.status(200);
           res.should.have.header('test-status', 'success');
 
-          res.body.should.be.a('string');
-          res.body.should.be.eql(body_value + stamp_value);
+          res.text.should.be.a('string');
+          res.text.should.be.eql(body_value + stamp_value);
 
           done();
         });
@@ -91,15 +90,15 @@ describe('Plugins interface', function () {
 
     it('should prepend stamp to request body and receive 200 code', function(done) {
       chai.request(server)
-        .put('/' + PLUGIN_API + '/stamp')
-        .send(Buffer.from(body_value))
+        .post('/' + PLUGIN_API + '/stamp')
+        .send(body_value)
         .end(function (err, res) {
           should.not.exist(err);
           res.should.have.status(200);
           res.should.have.header('test-status', 'success');
 
-          res.body.should.be.a('string');
-          res.body.should.be.eql(stamp_value + body_value);
+          res.text.should.be.a('string');
+          res.text.should.be.eql(stamp_value + body_value);
 
           done();
         });
@@ -111,11 +110,9 @@ describe('Plugins interface', function () {
     it('should return 405 code', function(done) {
       chai.request(server)
         .delete('/' + PLUGIN_API + '/stamp')
-        .send(Buffer.from(body_value))
         .end(function (err, res) {
           should.exist(err);
           err.should.have.status(405);
-          err.should.have.header('test-status', 'fail');
 
           done();
         });
