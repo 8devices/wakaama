@@ -25,7 +25,9 @@
 
 set -e
 
-BASE_DIR="$( cd "$(dirname "$0")/.."; pwd -P )"
+SCRIPT_DIR="$( cd "$(dirname "$0")"; pwd -P )"
+BASE_DIR="$( cd "${SCRIPT_DIR}/.."; pwd -P )"
+BUILD_DIR="$( cd "${BASE_DIR}/build"; pwd -P )"
 
 build_test_plugins () {
     cd "${BASE_DIR}/tests-rest/plugins/test-plugin"
@@ -63,9 +65,8 @@ generate_key_and_certificate () {
 }
 
 run_restserver () {
-    cd "${BASE_DIR}"
     initial_restserver_arguments=""
-    restserver_command="build/restserver ${initial_restserver_arguments}"
+    restserver_command="${BUILD_DIR}/restserver ${initial_restserver_arguments}"
 
     if ! [ -z "$1" ]; then
         coverage_prefix="GCOV_PREFIX_STRIP=5 GCOV_PREFIX=$1"
@@ -88,9 +89,9 @@ stop_restserver () {
 }
 
 cd "${BASE_DIR}"
-script/format_style.sh --dry-run
+eval "${SCRIPT_DIR}/format_style.sh --dry-run"
 
-if [ ! -x build/restserver ]
+if [ ! -x ${BUILD_DIR}/restserver ]
 then
     echo "Restserver binary not found! Exiting..."
     exit 1
@@ -109,7 +110,7 @@ SECURE_RESTSERVER_PID=$(run_restserver "secure" "-c ./tests-rest/secure.cfg")
 PLUGINS_RESTSERVER_PID=$(run_restserver "plugins" "-c ./tests-rest/plugins.cfg")
 
 echo "==> Running coverage tests..."
-if cd tests-rest && npm install && npm test
+if cd "${BASE_DIR}/tests-rest" && npm install && npm test
 then
     coverage_tests_status=0
 else
