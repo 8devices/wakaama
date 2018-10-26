@@ -123,16 +123,17 @@ int UlfiusHttpFramework::ulfiusCallback(const struct _u_request *u_request,
     case success_accepted:
     case success_no_content:
     case success_reset_content:
-        return U_CALLBACK_COMPLETE;
-
-    case client_error_unauthorized:
-        return U_CALLBACK_UNAUTHORIZED;
 
     case client_error:
     case client_error_forbidden:
     case client_error_not_found:
     case client_error_method_not_allowed:
     case client_error_not_acceptable:
+        return U_CALLBACK_COMPLETE;
+
+    case client_error_unauthorized:
+        return U_CALLBACK_UNAUTHORIZED;
+
     case server_error_internal_server_error:
         return U_CALLBACK_ERROR;
 
