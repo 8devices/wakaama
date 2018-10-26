@@ -30,9 +30,11 @@ BASE_DIR="$( cd "${SCRIPT_DIR}/.."; pwd -P )"
 BUILD_DIR="$( cd "${BASE_DIR}/build"; pwd -P )"
 
 build_test_plugins () {
-    cd "${BASE_DIR}/tests-rest/plugins/test-plugin"
-
-    cmake ./
+    TEST_PLUGIN_BUILD_DIR="${BASE_DIR}/tests-rest/plugins/test-plugin/build"
+    rm -r ${TEST_PLUGIN_BUILD_DIR} || true
+    mkdir -P ${TEST_PLUGIN_BUILD_DIR}
+    cd ${TEST_PLUGIN_BUILD_DIR}
+    cmake ../
     make
 
     cd "${BASE_DIR}"
