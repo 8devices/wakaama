@@ -54,8 +54,6 @@ StatusCode stamp(Request *request, Response *response, void *context)
     if (method == "GET")
     {
         string_response_body = plugin->getStamp();
-
-        response->setCode(status_code);
     }
     else if (method == "PUT")
     {
@@ -64,8 +62,6 @@ StatusCode stamp(Request *request, Response *response, void *context)
         string_request_body = std::string(reinterpret_cast<char *>(request_body.data()));
 
         plugin->setStamp(string_request_body);
-
-        response->setCode(status_code);
 
         status_code = success_no_content;
     }
