@@ -29,6 +29,10 @@ SCRIPT_DIR="$( cd "$(dirname "$0")"; pwd -P )"
 BASE_DIR="$( cd "${SCRIPT_DIR}/.."; pwd -P )"
 BUILD_DIR="$( cd "${BASE_DIR}/build"; pwd -P )"
 
+. "${SCRIPT_DIR}/utils"
+
+BASE_DIR_LEVEL=$(get_path_level ${BASE_DIR})
+
 build_test_plugins () {
     TEST_PLUGIN_BUILD_DIR="${BASE_DIR}/tests-rest/plugins/test-plugin/build"
     rm -r ${TEST_PLUGIN_BUILD_DIR} || true
@@ -71,7 +75,7 @@ run_restserver () {
     restserver_command="${BUILD_DIR}/restserver ${initial_restserver_arguments}"
 
     if ! [ -z "$1" ]; then
-        coverage_prefix="GCOV_PREFIX_STRIP=5 GCOV_PREFIX=$1"
+        coverage_prefix="GCOV_PREFIX_STRIP=${BASE_DIR_LEVEL} GCOV_PREFIX=$1"
         restserver_command="${coverage_prefix} ${restserver_command}"
     fi
 
