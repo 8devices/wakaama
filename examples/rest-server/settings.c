@@ -388,7 +388,7 @@ static int set_plugin_settings(json_t *j_plugin_settings, rest_list_t *plugins_l
 
 static int set_plugins_settings(json_t *j_section, plugins_settings_t *plugins_settings)
 {
-    int plugin_status;
+    int plugin_status, plugins_status = 0;
     size_t plugin_index;
     const char *section_name = "plugins";
     json_t *j_plugin_settings;
@@ -404,11 +404,16 @@ static int set_plugins_settings(json_t *j_section, plugins_settings_t *plugins_s
         plugin_status = set_plugin_settings(j_plugin_settings, plugins_settings->plugins_list);
         if (plugin_status != 0)
         {
-            return plugin_status;
+            plugins_status = plugin_status;
         }
     }
 
-    return 0;
+    if (plugins_status != 0)
+    {
+        fprintf(stdout, "Not all plugins were loaded successfully!\n");
+    }
+
+    return plugins_status;
 }
 
 int read_config(char *config_name, settings_t *settings)
