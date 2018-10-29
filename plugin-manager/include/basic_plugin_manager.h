@@ -22,54 +22,26 @@
  * SOFTWARE.
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef BASIC_PLUGIN_MANAGER_H
+#define BASIC_PLUGIN_MANAGER_H
 
-#include <stdint.h>
-#include <string.h>
-#include <jansson.h>
-#include <argp.h>
+#include "basic_plugin_manager_core.h"
 
-#include "logging.h"
-#include "security.h"
-
-#include "../../plugin-manager/include/basic_plugin_manager.h"
-
-typedef struct
+enum
 {
-    uint16_t port;
-    http_security_settings_t security;
-} http_settings_t;
+    J_MAX_LENGTH_PLUGIN_NAME = 1024,
+    J_MAX_LENGTH_PLUGIN_PATH = 1024,
+};
 
-typedef struct
-{
-    uint16_t port;
-} coap_settings_t;
+struct CBasicPluginManager;
+typedef struct CBasicPluginManager CBasicPluginManager;
 
-typedef struct
-{
-    const char *name;
-    const char *path;
-} plugin_settings_t;
+CBasicPluginManager *new_BasicPluginManager(CBasicPluginManagerCore *c_manager_core);
+void delete_BasicPluginManager(CBasicPluginManager *c_manager);
+int BasicPluginManager_loadPlugin(CBasicPluginManager *c_manager,
+                                  const char *c_path,
+                                  const char *c_name);
+int BasicPluginManager_unloadPlugin(CBasicPluginManager *c_manager,
+                                    const char *c_name);
 
-typedef struct
-{
-    rest_list_t *plugins_list;
-} plugins_settings_t;
-
-typedef struct
-{
-    http_settings_t http;
-    coap_settings_t coap;
-    logging_settings_t logging;
-    plugins_settings_t plugins;
-} settings_t;
-
-int read_config(char *config_name, settings_t *settings);
-
-error_t parse_opt(int key, char *arg, struct argp_state *state);
-
-int settings_init(int argc, char *argv[], settings_t *settings);
-
-#endif // SETTINGS_H
-
+#endif // BASIC_PLUGIN_MANAGER_H

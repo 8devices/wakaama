@@ -22,54 +22,17 @@
  * SOFTWARE.
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef LWM2M_FRAMEWORK_HPP
+#define LWM2M_FRAMEWORK_HPP
 
-#include <stdint.h>
-#include <string.h>
-#include <jansson.h>
-#include <argp.h>
+#include <string>
 
-#include "logging.h"
-#include "security.h"
-
-#include "../../plugin-manager/include/basic_plugin_manager.h"
-
-typedef struct
+class Lwm2mFramework
 {
-    uint16_t port;
-    http_security_settings_t security;
-} http_settings_t;
+public:
+    virtual ~Lwm2mFramework() { }
 
-typedef struct
-{
-    uint16_t port;
-} coap_settings_t;
+    virtual void *getContext() = 0;
+};
 
-typedef struct
-{
-    const char *name;
-    const char *path;
-} plugin_settings_t;
-
-typedef struct
-{
-    rest_list_t *plugins_list;
-} plugins_settings_t;
-
-typedef struct
-{
-    http_settings_t http;
-    coap_settings_t coap;
-    logging_settings_t logging;
-    plugins_settings_t plugins;
-} settings_t;
-
-int read_config(char *config_name, settings_t *settings);
-
-error_t parse_opt(int key, char *arg, struct argp_state *state);
-
-int settings_init(int argc, char *argv[], settings_t *settings);
-
-#endif // SETTINGS_H
-
+#endif // LWM2M_FRAMEWORK_HPP

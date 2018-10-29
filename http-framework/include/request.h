@@ -22,54 +22,26 @@
  * SOFTWARE.
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef REQUEST_H
+#define REQUEST_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdint.h>
-#include <string.h>
-#include <jansson.h>
-#include <argp.h>
 
-#include "logging.h"
-#include "security.h"
+struct CRequest;
+typedef struct CRequest CRequest;
 
-#include "../../plugin-manager/include/basic_plugin_manager.h"
+void delete_Request(CRequest *c_request);
+char *Request_getPath(CRequest *c_request);
+char *Request_getMethod(CRequest *c_request);
+char *Request_getHeader(CRequest *c_request, const char *c_header);
+uint8_t *Request_getBody(CRequest *c_request);
 
-typedef struct
-{
-    uint16_t port;
-    http_security_settings_t security;
-} http_settings_t;
+#ifdef __cplusplus
+}
+#endif
 
-typedef struct
-{
-    uint16_t port;
-} coap_settings_t;
-
-typedef struct
-{
-    const char *name;
-    const char *path;
-} plugin_settings_t;
-
-typedef struct
-{
-    rest_list_t *plugins_list;
-} plugins_settings_t;
-
-typedef struct
-{
-    http_settings_t http;
-    coap_settings_t coap;
-    logging_settings_t logging;
-    plugins_settings_t plugins;
-} settings_t;
-
-int read_config(char *config_name, settings_t *settings);
-
-error_t parse_opt(int key, char *arg, struct argp_state *state);
-
-int settings_init(int argc, char *argv[], settings_t *settings);
-
-#endif // SETTINGS_H
-
+#endif // REQUEST_H

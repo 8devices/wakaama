@@ -22,54 +22,40 @@
  * SOFTWARE.
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef RESPONSE_HPP
+#define RESPONSE_HPP
+
+#include <map>
+#include <string>
+#include <vector>
 
 #include <stdint.h>
-#include <string.h>
-#include <jansson.h>
-#include <argp.h>
 
-#include "logging.h"
-#include "security.h"
+enum StatusCode {
+    unknown = 0,
+    information_continue = 100,
+    success_ok = 200,
+    success_created = 201,
+    success_accepted = 202,
+    success_no_content = 204,
+    success_reset_content = 205,
+    client_error = 400,
+    client_error_unauthorized = 401,
+    client_error_forbidden = 403,
+    client_error_not_found = 404,
+    client_error_method_not_allowed = 405,
+    client_error_not_acceptable = 406,
+    server_error_internal_server_error = 500
+};
 
-#include "../../plugin-manager/include/basic_plugin_manager.h"
-
-typedef struct
+class Response
 {
-    uint16_t port;
-    http_security_settings_t security;
-} http_settings_t;
+public:
+    virtual ~Response() { }
 
-typedef struct
-{
-    uint16_t port;
-} coap_settings_t;
+    virtual void setBody(std::vector<uint8_t> binary_data) = 0;
+    virtual void setCode(StatusCode code) = 0;
+    virtual void setHeader(const std::string header, const std::string value) = 0;
+};
 
-typedef struct
-{
-    const char *name;
-    const char *path;
-} plugin_settings_t;
-
-typedef struct
-{
-    rest_list_t *plugins_list;
-} plugins_settings_t;
-
-typedef struct
-{
-    http_settings_t http;
-    coap_settings_t coap;
-    logging_settings_t logging;
-    plugins_settings_t plugins;
-} settings_t;
-
-int read_config(char *config_name, settings_t *settings);
-
-error_t parse_opt(int key, char *arg, struct argp_state *state);
-
-int settings_init(int argc, char *argv[], settings_t *settings);
-
-#endif // SETTINGS_H
-
+#endif // RESPONSE_HPP

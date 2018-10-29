@@ -8,6 +8,7 @@ if(DTLS)
     message(FATAL_ERROR "DTLS option is not supported." )
 endif()
 
+include(${CMAKE_CURRENT_LIST_DIR}/../../plugin-manager/plugin-manager.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/../../core/wakaama.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/../shared/shared.cmake)
 
@@ -42,6 +43,7 @@ SET(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/logging.c
     ${CMAKE_CURRENT_LIST_DIR}/settings.c
     ${CMAKE_CURRENT_LIST_DIR}/security.c
+    ${PLUGIN_MANAGER_SOURCES}
     )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${WAKAAMA_SOURCES} ${SHARED_SOURCES})
@@ -49,7 +51,13 @@ find_library(ULFIUS_LIB ulfius)
 find_library(JANSSON_LIB jansson)
 find_library(JWT_LIB jwt)
 target_compile_options(restserver PRIVATE "-Wall" "-pthread")
-target_link_libraries(restserver pthread "${ULFIUS_LIB}" "${JANSSON_LIB}" "${JWT_LIB}")
+target_link_libraries(restserver
+                      pthread
+                      ${ULFIUS_LIB}
+                      ${JANSSON_LIB}
+                      ${JWT_LIB}
+                      ${PLUGIN_MANAGER_LIBRARIES}
+                      )
 
 
 if(CODE_COVERAGE)

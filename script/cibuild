@@ -44,8 +44,9 @@ do
         echo "Time until coverage directories appeared: ${time_slept} s"
         # If another way of making sure that coverage reports appears is found,
         # following code can be moved out of this for-if section
-        cp -r build core examples secure
-        cp -r build core examples regular
+        cp -r build core examples http-framework lwm2m-framework plugin-manager regular
+        cp -r build core examples http-framework lwm2m-framework plugin-manager secure
+        cp -r build core examples http-framework lwm2m-framework plugin-manager plugins
         exit 0
     fi
     sleep ${sleep_interval}

@@ -1,0 +1,17 @@
+# Provides PLUGIN_MANAGER_SOURCES_DIR, PLUGIN_MANAGER_SOURCES and PLUGIN_MANAGER_LIBRARIES variables.
+
+include(${CMAKE_CURRENT_LIST_DIR}/../http-framework/http-framework.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../lwm2m-framework/lwm2m-framework.cmake)
+
+set(PLUGIN_MANAGER_SOURCES_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
+set(PLUGIN_MANAGER_SOURCES
+    ${PLUGIN_MANAGER_SOURCES_DIR}/basic_plugin_manager_core.cpp
+    ${PLUGIN_MANAGER_SOURCES_DIR}/basic_plugin_manager.cpp
+
+    ${HTTP_FRAMEWORK_SOURCES}
+    ${LWM2M_FRAMEWORK_SOURCES}
+    )
+
+# find_library(DL_LIB dl)
+
+set (PLUGIN_MANAGER_LIBRARIES ${HTTP_FRAMEWORK_LIBRARIES} ${LWM2M_FRAMEWORK_LIBRARIES} dl)

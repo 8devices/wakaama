@@ -22,54 +22,23 @@
  * SOFTWARE.
  */
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef ULFIUS_HTTP_FRAMEWORK_H
+#define ULFIUS_HTTP_FRAMEWORK_H
 
-#include <stdint.h>
-#include <string.h>
-#include <jansson.h>
-#include <argp.h>
+#include "http_framework.h"
 
-#include "logging.h"
-#include "security.h"
+struct CUlfiusHttpFramework;
+typedef struct CUlfiusHttpFramework CUlfiusHttpFramework;
+CUlfiusHttpFramework *new_UlfiusHttpFramework(struct _u_instance *instance);
+void delete_UlfiusHttpFramework(CUlfiusHttpFramework *c_framework);
+void UlfiusHttpFramework_startFramework(CUlfiusHttpFramework *c_framework);
+void UlfiusHttpFramework_startSecureFramework(
+    CUlfiusHttpFramework *c_framework, const char *c_private_key_file,
+    const char *c_certificate_file);
+void UlfiusHttpFramework_stopFramework(CUlfiusHttpFramework *c_framework);
+void UlfiusHttpFramework_addHandler(
+    CUlfiusHttpFramework *c_framework,
+    const char *method, const char *url_prefix,
+    unsigned int priority, c_callback_function_t handler_function, void *handler_context);
 
-#include "../../plugin-manager/include/basic_plugin_manager.h"
-
-typedef struct
-{
-    uint16_t port;
-    http_security_settings_t security;
-} http_settings_t;
-
-typedef struct
-{
-    uint16_t port;
-} coap_settings_t;
-
-typedef struct
-{
-    const char *name;
-    const char *path;
-} plugin_settings_t;
-
-typedef struct
-{
-    rest_list_t *plugins_list;
-} plugins_settings_t;
-
-typedef struct
-{
-    http_settings_t http;
-    coap_settings_t coap;
-    logging_settings_t logging;
-    plugins_settings_t plugins;
-} settings_t;
-
-int read_config(char *config_name, settings_t *settings);
-
-error_t parse_opt(int key, char *arg, struct argp_state *state);
-
-int settings_init(int argc, char *argv[], settings_t *settings);
-
-#endif // SETTINGS_H
-
+#endif // ULFIUS_HTTP_FRAMEWORK_H

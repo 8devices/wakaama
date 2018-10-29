@@ -41,6 +41,9 @@
 #include "rest-list.h"
 #include "rest-authentication.h"
 
+#include "../../plugin-manager/include/basic_plugin_manager.h"
+#include "../../plugin-manager/include/basic_plugin_manager_core.h"
+
 static volatile int restserver_quit;
 static void sigint_handler(int signo)
 {
@@ -95,6 +98,41 @@ static void init_signals(void)
     }
 }
 
+static int load_plugins(CBasicPluginManager *plugin_manager, rest_list_t *plugins_list)
+{
+    rest_list_entry_t *entry;
+    plugin_settings_t *plugin;
+    int load_is_successful;
+
+    for (entry = plugins_list->head; entry != NULL; entry = entry->next)
+    {
+        plugin = entry->data;
+        load_is_successful = BasicPluginManager_loadPlugin(plugin_manager, plugin->path, plugin->name);
+
+        if (load_is_successful)
+        {
+            log_message(LOG_LEVEL_INFO, "Successfuly loaded plugin: \"%s\"\n", plugin->name);
+        }
+        else
+        {
+            log_message(LOG_LEVEL_ERROR, "Failed to load plugin: \"%s\"\n", plugin->name);
+        }
+    }
+
+    return 0;
+}
+void plugins_cleanup(plugins_settings_t *plugins_settings)
+{
+    rest_list_entry_t *entry;
+    plugin_settings_t *plugin;
+
+    for (entry = plugins_settings->plugins_list->head; entry != NULL; entry = entry->next)
+    {
+        plugin = entry->data;
+        free(plugin);
+    }
+    free(plugins_settings->plugins_list);
+}
 
 const char *binding_to_string(lwm2m_binding_t bind)
 {
@@ -295,6 +333,7 @@ int main(int argc, char *argv[])
         },
     };
 
+    settings.plugins.plugins_list = rest_list_new();
     settings.http.security.jwt.users_list = rest_list_new();
     settings.http.security.jwt.secret_key = (unsigned char *) malloc(
                                                 settings.http.security.jwt.secret_key_length * sizeof(unsigned char));
@@ -332,8 +371,10 @@ int main(int argc, char *argv[])
 
     lwm2m_set_monitoring_callback(rest.lwm2m, client_monitor_cb, &rest);
 
-    /* REST server section */
     struct _u_instance instance;
+
+    CBasicPluginManagerCore *plugin_manager_core = new_BasicPluginManagerCore(&instance, rest.lwm2m);
+    CBasicPluginManager *plugin_manager = new_BasicPluginManager(plugin_manager_core);
 
     log_message(LOG_LEVEL_INFO, "Creating http socket on port %u\n", settings.http.port);
     if (ulfius_init_instance(&instance, settings.http.port, NULL, NULL) != U_OK)
@@ -346,6 +387,9 @@ int main(int argc, char *argv[])
      * mbed Device Connector based api
      * https://docs.mbed.com/docs/mbed-device-connector-web-interfaces/en/latest/api-reference/
      */
+
+    // Plugins
+    load_plugins(plugin_manager, settings.plugins.plugins_list);
 
     // Endpoints
     ulfius_add_endpoint_by_val(&instance, "GET", "/endpoints", NULL, 10,
@@ -498,10 +542,14 @@ int main(int argc, char *argv[])
     ulfius_stop_framework(&instance);
     ulfius_clean_instance(&instance);
 
+    delete_BasicPluginManager(plugin_manager);
+    delete_BasicPluginManagerCore(plugin_manager_core);
+
     lwm2m_close(rest.lwm2m);
     rest_cleanup(&rest);
 
     jwt_cleanup(&settings.http.security.jwt);
+    plugins_cleanup(&settings.plugins);
 
     return 0;
 }
