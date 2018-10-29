@@ -106,6 +106,19 @@ bool BasicPluginManager::loadPlugin(std::string path, std::string name)
         return false;
     }
 
+    if (plugin_api->create == NULL)
+    {
+        std::cerr << "Failed to load plugin api from '" << path << "\"!" << std::endl;
+        std::cerr << "Missing PLUGIN_API->create()" << std::endl;
+        return false;
+    }
+    if (plugin_api->destroy == NULL)
+    {
+        std::cerr << "Failed to load plugin api from '" << path << "\"!" << std::endl;
+        std::cerr << "Missing PLUGIN_API->destroy()" << std::endl;
+        return false;
+    }
+
     plugin_version_t plugin_version = plugin_api->version;
     Plugin *plugin = plugin_api->create(core);
 
