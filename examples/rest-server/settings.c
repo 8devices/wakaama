@@ -397,8 +397,8 @@ static int set_plugins_settings(json_t *j_section, plugins_settings_t *plugins_s
     {
         if (!json_is_object(j_plugin_settings))
         {
-            fprintf(stdout, "%s configuration list contains invalid type value\n", section_name);
-            return 1;
+            fprintf(stdout, "\"%s\" section contains invalid type value\n", section_name);
+            plugins_status = 1;
         }
 
         plugin_status = set_plugin_settings(j_plugin_settings, plugins_settings->plugins_list);
@@ -410,7 +410,7 @@ static int set_plugins_settings(json_t *j_section, plugins_settings_t *plugins_s
 
     if (plugins_status != 0)
     {
-        fprintf(stdout, "Not all plugins were loaded successfully!\n");
+        fprintf(stdout, "Not all entries in \"%s\" section were configured corretly!\n", section_name);
     }
 
     return plugins_status;
